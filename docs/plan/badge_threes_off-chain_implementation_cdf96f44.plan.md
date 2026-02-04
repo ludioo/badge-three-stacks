@@ -10,7 +10,7 @@ todos:
     status: completed
   - id: ui-rebrand
     content: Update all UI text, branding, and tile colors for Badge Threes
-    status: pending
+    status: completed
   - id: disable-onchain
     content: Create feature flags and disable all on-chain features for off-chain phase
     status: pending
@@ -72,7 +72,7 @@ graph TD
 - **1.2 Core logic:** Updated `merge.ts` to use canMerge/getMergedValue; `spawn.ts` to use getSpawnValue(SPAWN_WEIGHTS); `checkGameOver.ts` to use canMerge; `constants.ts` (SPAWN_WEIGHTS, removed SPAWN_2/4_PROBABILITY); `types.ts` (comments for Threes).
 - **1.3 Unit tests:** Updated `merge.test.ts`, `spawn.test.ts`, `checkGameOver.test.ts`, `slide.test.ts`, `reducer.test.ts` for Threes rules; added `lib/game/rules/mergeRule.test.ts` and `spawnRule.test.ts`. All 141 tests pass.
 
-Proceed to **Phase 2: UI/UX Rebranding** when ready.
+**Phase 2: UI/UX Rebranding** completed (text, tile colors, instructions).
 
 ---
 
@@ -162,7 +162,7 @@ Badge Threes should spawn 1, 2, or 3 with weighted probabilities.
 
 ---
 
-## Phase 2: UI/UX Rebranding
+## Phase 2: UI/UX Rebranding ✅ (Complete)
 
 ### 2.1 Update All Text References
 

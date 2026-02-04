@@ -2,8 +2,8 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'badge2048-stacks - Home',
-  description: 'Play 2048, earn badges, and showcase your achievements.',
+  title: 'Badge Three Stacks - Home',
+  description: 'Badge Three Stacks: Threes-style game on Stacks. Power-of-3 merge mechanics, earn badges, and showcase your achievements.',
 }
 
 export default function Home() {
@@ -11,10 +11,10 @@ export default function Home() {
     <div className="flex w-full flex-1 items-center justify-center">
       <div className="text-center max-w-2xl w-full">
         <h1 className="text-2xl sm:text-4xl font-bold text-[#F4622F] mb-2">
-          Welcome to badge2048-stacks
+          Welcome to Badge Three Stacks
         </h1>
         <p className="text-base sm:text-lg text-[#4B5563] mb-6 sm:mb-8">
-          Play the classic 2048 game and collect badges by achieving high scores!
+          Threes-style puzzle on Stacks: combine 1+2→3, then merge pairs (3+3→6, 6+6→12) and collect badges by achieving high scores!
         </p>
         <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
           <Link

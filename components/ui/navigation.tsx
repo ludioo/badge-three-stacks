@@ -32,7 +32,7 @@ export default function Navigation() {
       <div className="container mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between gap-4 min-w-0 min-h-[56px] sm:min-h-[60px] py-3">
           <Link href="/" className="text-lg sm:text-xl font-bold text-[#F4622F] shrink-0 leading-tight flex items-center">
-            badge2048-stacks
+            Badge Three Stacks
           </Link>
           {/* Desktop: nav links + wallet in bar. Mobile: only hamburger — wallet lives inside menu */}
           <div className="flex items-center gap-3 md:gap-4 min-w-0 flex-1 justify-end">

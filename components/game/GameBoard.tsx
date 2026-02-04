@@ -36,7 +36,7 @@ export function GameBoard({ tiles, className }: GameBoardProps) {
       className={cn('relative w-fit mx-auto', className)}
       style={gridStyle}
       data-testid="game-board"
-      aria-label="2048 game board"
+      aria-label="Badge Three Stacks game board"
     >
       {/* Fixed 4x4 grid = 16 cells (background) */}
       <div

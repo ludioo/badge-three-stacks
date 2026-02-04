@@ -366,7 +366,7 @@ export function Game() {
             transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.2, ease: 'easeOut' }}
             className="rounded-full bg-[#F4622F] px-3 py-1 text-[11px] text-white shadow-sm"
           >
-            Swipe, drag, or use arrow keys to move tiles
+            Swipe, drag, or use arrow keys to move tiles. Combine 1+2→3, then merge same numbers (3+3→6, 6+6→12).
           </motion.div>
         )}
       </AnimatePresence>
@@ -399,7 +399,7 @@ export function Game() {
       ) : (
         <div className="touch-none select-none">
           <div className="w-fit mx-auto">
-            <div className="relative w-fit mx-auto" data-testid="game-board" aria-label="2048 game board">
+            <div className="relative w-fit mx-auto" data-testid="game-board" aria-label="Badge Three Stacks game board">
               <div
                 className="inline-grid rounded-xl bg-gradient-to-br from-white via-[#FD9E7F]/20 to-[#FD9E7F]/30 ring-1 ring-[#FD9E7F]/30 shadow-[0_16px_30px_rgba(244,98,47,0.12)]"
                 style={{
@@ -543,7 +543,7 @@ export function Game() {
       </Dialog>
 
       <div className="text-center text-xs sm:text-sm text-[#4B5563] max-w-md px-4">
-        <p>Use arrow keys, swipe (mobile), or drag (desktop) to move tiles. Combine tiles with the same number to reach 2048!</p>
+        <p>Use arrow keys, swipe (mobile), or drag (desktop) to move tiles. Combine 1+2 to make 3, then merge pairs (3+3→6, 6+6→12) to reach higher scores!</p>
       </div>
     </div>
   )

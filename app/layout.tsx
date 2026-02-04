@@ -17,8 +17,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "badge2048-stacks - Play & Earn Badges",
-  description: "Play the classic 2048 game and collect badges by achieving high scores",
+  title: "Badge Three Stacks - Play & Earn Badges",
+  description: "Badge Three Stacks: Threes-style game on Stacks. Power-of-3 merge mechanics, collect badges by achieving high scores.",
   icons: {
     icon: '/badge2048-stacks-icon.png',
     apple: '/badge2048-stacks-icon.png',

@@ -16,23 +16,25 @@ interface TileProps {
 const getTileColors = (value: number | null) => {
   if (!value) return 'bg-white/20 text-[#6B7280]'
 
-  // Stacks color progression: white -> tangerine-dream -> tiger-flame-2 -> tiger-flame
-  const colors = {
-    2: 'bg-gradient-to-br from-white to-[#FD9E7F] text-[#F4622F] border-[#FD9E7F]',
-    4: 'bg-gradient-to-br from-[#FD9E7F] to-[#FB6331] text-white border-[#FB6331]',
-    8: 'bg-gradient-to-br from-[#FB6331] to-[#F4622F] text-white border-[#F4622F]',
-    16: 'bg-gradient-to-br from-[#F4622F] to-[#E8552A] text-white border-[#E8552A]',
-    32: 'bg-gradient-to-br from-[#E8552A] to-[#DC4824] text-white border-[#DC4824]',
-    64: 'bg-gradient-to-br from-[#DC4824] to-[#D03B1E] text-white border-[#D03B1E]',
-    128: 'bg-gradient-to-br from-[#D03B1E] to-[#C42E18] text-white border-[#C42E18]',
-    256: 'bg-gradient-to-br from-[#C42E18] to-[#B82112] text-white border-[#B82112]',
-    512: 'bg-gradient-to-br from-[#B82112] to-[#AC140C] text-white border-[#AC140C]',
-    1024: 'bg-gradient-to-br from-[#AC140C] to-[#A00706] text-white border-[#A00706]',
-    2048: 'bg-gradient-to-br from-[#A00706] to-[#940000] text-white border-[#940000] shadow-[0_0_20px_rgba(244,98,47,0.6)]',
+  // Badge Three Stacks (Threes on Stacks): 1 and 2 distinct; 3+ orange gradient (3→6→12→…)
+  const colors: Record<number, string> = {
+    1: 'bg-gradient-to-br from-[#93C5FD] to-[#60A5FA] text-[#1E40AF] border-[#3B82F6]',
+    2: 'bg-gradient-to-br from-[#F9A8D4] to-[#F472B6] text-[#9D174D] border-[#EC4899]',
+    3: 'bg-gradient-to-br from-white to-[#FD9E7F] text-[#F4622F] border-[#FD9E7F]',
+    6: 'bg-gradient-to-br from-[#FD9E7F] to-[#FB6331] text-white border-[#FB6331]',
+    12: 'bg-gradient-to-br from-[#FB6331] to-[#F4622F] text-white border-[#F4622F]',
+    24: 'bg-gradient-to-br from-[#F4622F] to-[#E8552A] text-white border-[#E8552A]',
+    48: 'bg-gradient-to-br from-[#E8552A] to-[#DC4824] text-white border-[#DC4824]',
+    96: 'bg-gradient-to-br from-[#DC4824] to-[#D03B1E] text-white border-[#D03B1E]',
+    192: 'bg-gradient-to-br from-[#D03B1E] to-[#C42E18] text-white border-[#C42E18]',
+    384: 'bg-gradient-to-br from-[#C42E18] to-[#B82112] text-white border-[#B82112]',
+    768: 'bg-gradient-to-br from-[#B82112] to-[#AC140C] text-white border-[#AC140C]',
+    1536: 'bg-gradient-to-br from-[#AC140C] to-[#A00706] text-white border-[#A00706]',
+    3072: 'bg-gradient-to-br from-[#A00706] to-[#940000] text-white border-[#940000] shadow-[0_0_20px_rgba(244,98,47,0.6)]',
   }
 
   return (
-    colors[value as keyof typeof colors] ||
+    colors[value] ||
     'bg-gradient-to-br from-[#940000] to-[#880000] text-white border-[#880000] shadow-[0_0_25px_rgba(244,98,47,0.8)]'
   )
 }
