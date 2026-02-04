@@ -16,10 +16,10 @@ todos:
     status: completed
   - id: unit-tests
     content: Update all unit tests to reflect Threes game mechanics
-    status: in_progress
+    status: completed
   - id: e2e-tests
     content: Update E2E tests for new game rules and off-chain mode
-    status: pending
+    status: completed
   - id: documentation
     content: Update all documentation, README, and create off-chain phase docs
     status: pending

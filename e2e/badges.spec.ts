@@ -8,7 +8,7 @@ const badgesFixture = [
 ]
 
 test.describe('badges page', () => {
-  test('shows claim CTA when there are claimable badges', async ({ page }) => {
+  test('shows heading and unlock progress', async ({ page }) => {
     await page.addInitScript((badges) => {
       window.localStorage.setItem('badges_v1', JSON.stringify({ badges }))
     }, badgesFixture)
@@ -20,8 +20,8 @@ test.describe('badges page', () => {
     await page.goto('/badges')
 
     await expect(page.getByRole('heading', { name: 'Badges' })).toBeVisible()
-    await expect(page.getByRole('link', { name: 'Go to Claim' })).toBeVisible({ timeout: 10000 })
-    await expect(page.getByText('Claimable: 1')).toBeVisible({ timeout: 10000 })
-    await expect(page.getByText('Locked: 3')).toBeVisible()
+    // Without wallet connected, effective badges are all locked (off-chain behavior)
+    await expect(page.getByText('Locked: 4')).toBeVisible({ timeout: 10000 })
+    await expect(page.getByText('0 of 4 badges unlocked')).toBeVisible()
   })
 })

@@ -8,12 +8,22 @@ const badgesFixture = [
 ]
 
 test.describe('badge claim flow', () => {
-  test('can claim an unlocked badge and see it owned', async ({ page }) => {
+  test('claim page shows off-chain mode when minting disabled', async ({ page }) => {
+    await page.goto('/claim')
+
+    await expect(page.getByRole('heading', { name: 'Claim Badges' })).toBeVisible()
+    await expect(page.getByText('Off-chain mode')).toBeVisible()
+    await expect(
+      page.getByText(/Badge minting on the blockchain is disabled/, { exact: false })
+    ).toBeVisible()
+    // With wallet disconnected, claimable list is empty; when minting is off, any claim button would show "Coming soon"
+  })
+
+  test.skip('can claim an unlocked badge and see it owned (run when BADGE_MINTING is true)', async ({ page }) => {
     await page.addInitScript((badges) => {
       window.localStorage.setItem('badges_v1', JSON.stringify({ badges }))
     }, badgesFixture)
 
-    // Ensure we're on app origin so init script runs; then set storage and go to claim
     await page.goto('/')
     await page.evaluate((badges) => {
       window.localStorage.setItem('badges_v1', JSON.stringify({ badges }))

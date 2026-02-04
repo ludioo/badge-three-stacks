@@ -8,19 +8,20 @@ const navigateFromHeader = async (page: Page, name: string) => {
     return
   }
 
-  await page.getByRole('link', { name }).click()
+  // Desktop: use nav scope so "Badges" doesn't match homepage "View Badges"
+  await page.getByRole('navigation').getByRole('link', { name }).click()
 }
 
 test.describe('navigation', () => {
   test('can reach core pages from home', async ({ page }) => {
     await page.goto('/')
     await expect(
-      page.getByRole('heading', { name: 'Welcome to badge2048' })
+      page.getByRole('heading', { name: 'Welcome to Badge Three Stacks' })
     ).toBeVisible()
 
     await page.getByRole('link', { name: 'Start Playing' }).click()
     await expect(
-      page.getByRole('heading', { name: '2048 Badge Game' })
+      page.getByRole('heading', { name: 'Badge Three Stacks' })
     ).toBeVisible()
 
     await navigateFromHeader(page, 'Badges')

@@ -5,7 +5,7 @@ test.describe('play page', () => {
     await page.goto('/play')
 
     await expect(
-      page.getByRole('heading', { name: '2048 Badge Game' })
+      page.getByRole('heading', { name: 'Badge Three Stacks' })
     ).toBeVisible()
 
     const board = page.getByTestId('game-board')
