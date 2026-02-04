@@ -93,22 +93,14 @@ The error usually means the CLI cannot reach the **Bitcoin testnet node** (`bitc
 
 **Fix CLI – things to try:**
 
-1. **Confirm it’s environment, not project**  
-   From the **badge2048-contract** folder run:
-   ```bash
-   cd ../badge2048-contract
-   clarinet deployments apply --testnet
-   ```
-   If you get the same `RecvError`, the cause is your network/CLI environment, not badgethrees.
-
-2. **Use an alternative Stacks endpoint in the plan**  
+1. **Use an alternative Stacks endpoint in the plan**  
    Edit `deployments/default.testnet-plan.yaml` and set:
    ```yaml
    stacks-node: "https://stacks-node-api.testnet.stacks.co"
    ```
    (keep `bitcoin-node` as is.) Save and run `clarinet deployments apply --testnet` again.
 
-3. **Regenerate the deployment plan**  
+2. **Regenerate the deployment plan**  
    Remove the plan, then regenerate (you will need to re-enter cost if you use `--manual-cost`):
    ```bash
    del deployments\default.testnet-plan.yaml
@@ -116,10 +108,10 @@ The error usually means the CLI cannot reach the **Bitcoin testnet node** (`bitc
    clarinet deployments apply --testnet
    ```
 
-4. **Upgrade Clarinet**  
+3. **Upgrade Clarinet**  
    Check version: `clarinet --version`. Install the latest from [Hiro Clarinet](https://docs.hiro.so/stacks/clarinet/) in case a newer release fixes connectivity or uses different endpoints.
 
-5. **Network**  
+4. **Network**  
    Try from another connection (e.g. hotspot), turn VPN off, or allow the CLI in firewall/antivirus.
 
 If none of the above work, deploy via **[Hiro Platform](https://www.hiro.so/platform)** (Deploy Contracts → testnet) so broadcasting is done from Hiro’s servers.

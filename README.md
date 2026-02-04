@@ -83,7 +83,7 @@ See [docs/THREES-RULES.md](docs/THREES-RULES.md) for detailed merge and spawn ru
                     ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
 │  Stacks ($STX) — when feature flags enable on-chain                      │
-│  contracts/badge2048-contract: mint-badge, get-badge-ownership, etc.     │
+│  contracts/badgethrees-contract: mint-badge, get-badge-ownership, etc.   │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -119,8 +119,8 @@ cp .env.example .env.local
 | Variable | Required | Description |
 |----------|----------|-------------|
 | `NEXT_PUBLIC_STACKS_NETWORK` | No | `testnet` (default) or `mainnet` |
-| `NEXT_PUBLIC_CONTRACT_ADDRESS` | No* | `{deployer}.badge2048` for on-chain mint when enabled; mainnet: `SP....badge2048`; testnet: `ST....badge2048` |
-| `NEXT_PUBLIC_CONTRACT_NAME` | No | `badge2048` (default) |
+| `NEXT_PUBLIC_CONTRACT_ADDRESS` | No* | `{deployer}.badgethrees` for on-chain mint when enabled; mainnet: `SP....badgethrees`; testnet: `ST....badgethrees` |
+| `NEXT_PUBLIC_CONTRACT_NAME` | No | `badgethrees` (default) |
 | `NEXT_PUBLIC_DEPLOYER_ADDRESS` | No | Deployer principal; mainnet `SP`, testnet `ST`; fallback if contract address unset |
 
 \* Needed only when on-chain mint and badge-ownership API are enabled. Game, local badges, and leaderboard work without it.
@@ -200,7 +200,7 @@ After `npm install` you may see **low severity** vulnerabilities from transitive
 │   ├── useLeaderboard.ts, useLeaderboardRank.ts, useSubmitScore.ts
 │   └── …
 ├── contracts/
-│   └── badge2048-contract/      # Clarity (Clarinet), badge2048.clar, tests, deployments
+│   └── badgethrees-contract/   # Clarity (Clarinet), badgethrees.clar, tests, deployments
 ├── e2e/                         # Playwright: navigation, play, badges, badge-claim, leaderboard
 └── docs/                        # Specs, rules, THREES-RULES, OFFCHAIN-PHASE, etc.
 ```
@@ -220,7 +220,7 @@ After `npm install` you may see **low severity** vulnerabilities from transitive
 | `npm run test:e2e` | Playwright E2E |
 | `npm run test:e2e:ui` | Playwright E2E with UI |
 
-**Contract (Clarinet):** from `contracts/badge2048-contract/` run `clarinet test`.
+**Contract (Clarinet):** from `contracts/badgethrees-contract/` run `clarinet test`.
 
 ---
 
