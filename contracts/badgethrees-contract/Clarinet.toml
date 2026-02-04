@@ -1,0 +1,14 @@
+[project]
+name = "badgethrees-contract"
+description = "Badge Threes NFT contract (Power-of-3 game achievements)"
+authors = []
+telemetry = true
+cache_dir = "./.cache"
+
+[contracts.badgethrees]
+path = "contracts/badgethrees.clar"
+epoch = "latest"
+
+[repl.analysis]
+passes = ["check_checker"]
+check_checker = { trusted_sender = false, trusted_caller = false, callee_filter = false }

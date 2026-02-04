@@ -1,6 +1,7 @@
 ---
 name: Badge Threes Off-chain Implementation
 overview: Transform Badge2048 codebase into Badge Threes with Power-of-3 merge mechanics, finite gameplay, and off-chain-only features. This plan covers core game logic refactoring, UI rebranding, on-chain feature disabling, and comprehensive testing.
+status: closed
 todos:
   - id: rule-engine
     content: Create rule engine module with merge and spawn rules for Threes mechanics
@@ -30,6 +31,8 @@ isProject: false
 ---
 
 # Badge Threes Off-chain Implementation Plan
+
+**Plan status: Closed** — All phases (1–5) and todos completed. Manual testing signed off 2025-02-05. Next: testnet/mainnet when re-enabling on-chain (see [docs/OFFCHAIN-PHASE.md](../OFFCHAIN-PHASE.md)).
 
 ## Architecture Overview
 

@@ -1,0 +1,21 @@
+---
+# Mainnet deployment for Badge Threes (use after testnet validation).
+# Generate with: clarinet deployments generate --mainnet --manual-cost
+# Apply with: clarinet deployments apply --mainnet
+id: 0
+name: Mainnet deployment
+network: mainnet
+stacks-node: "https://api.hiro.so"
+bitcoin-node: "http://blockstack:blockstacksystem@bitcoin.blockstack.com:8332"
+plan:
+  batches:
+    - id: 0
+      transactions:
+        - contract-publish:
+            contract-name: badgethrees
+            expected-sender: SP22ZCY5GAH27T4CK3ATG4QTZJQV6FXPRB8X907KX
+            cost: 89600
+            path: "contracts/badgethrees.clar"
+            anchor-block-only: true
+            clarity-version: 4
+      epoch: "3.3"
