@@ -1,0 +1,70 @@
+# Game Mechanics Specification
+
+**Application Name:** badge2048
+
+## Core Mechanics
+
+* **Fixed 4×4 grid** (16 cells) - board size never changes
+* Endless until no moves remain
+* Merge identical tiles on slide
+* Incremental scoring
+* New tiles spawn after valid moves
+* Failure = no moves + no empty cells
+
+## Board Structure
+
+* **Grid Size:** Always 4×4 (16 cells total)
+* **Cell States:** Empty (null) or contains a number tile (2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096+)
+* **Maximum Tiles:** Up to 16 tiles can exist simultaneously (when board is full)
+* **Important:** Board dimensions are fixed and never expand
+
+## Input
+
+* **Keyboard:** Arrow keys (up, down, left, right)
+* **Touch:** Swipe gestures (mobile)
+* **Mouse:** Drag/swipe gestures (desktop)
+
+## State Machine (Deterministic)
+
+```
+state → action → new_state
+```
+
+### Actions
+
+* `SLIDE_LEFT`
+* `SLIDE_RIGHT`
+* `SLIDE_UP`
+* `SLIDE_DOWN`
+* `RESTART`
+
+## Spawn Logic
+
+* Spawn 2 (90%) or 4 (10%)
+* Random empty cell
+* Only spawn after valid move (board changed)
+
+## Merge Logic
+
+* Identical tiles merge
+* Double value (2+2=4, 4+4=8, etc.)
+* Score += merged value
+* One merge per cell per action
+* Tiles merge in direction of slide
+
+## End Condition
+
+* Game over when:
+  * No empty tile AND
+  * No adjacent merge possible (no identical tiles next to each other)
+
+## Game Flow
+
+1. Initialize: Spawn 2 tiles (2 or 4) on empty board
+2. Player action: Slide in direction
+3. Process slide: Move tiles, merge if possible
+4. Check if board changed
+5. If changed: Spawn new tile, update score
+6. Check end condition
+7. If game over: Show game over state
+8. Repeat from step 2
