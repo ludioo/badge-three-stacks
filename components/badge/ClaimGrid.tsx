@@ -6,6 +6,7 @@ import type { Badge, BadgeTier } from '@/lib/game/types'
 import { useBadges } from '@/hooks/useBadges'
 import { useStacksWallet } from '@/hooks/useStacksWallet'
 import { useBadgeContract } from '@/hooks/useBadgeContract'
+import { FEATURES } from '@/lib/featureFlags'
 import { badgeTierMeta } from '@/components/badge/badgeMeta'
 import { Button } from '@/components/ui/button'
 import {
@@ -27,8 +28,10 @@ import { ERROR_MESSAGES } from '@/lib/stacks/constants'
 
 type TransactionStatus = 'idle' | 'pending' | 'polling' | 'success' | 'error'
 
+const mintingEnabled = FEATURES.BADGE_MINTING
+
 export function ClaimGrid() {
-  const { badges, claimBadge, replaceBadges } = useBadges()
+  const { badges, replaceBadges } = useBadges()
   const { isAuthenticated, connectWallet, address } = useStacksWallet()
   const { mintBadge, getTransactionUrl } = useBadgeContract()
   
@@ -234,6 +237,7 @@ export function ClaimGrid() {
   }
 
   const handleOpenDialog = async (badge: Badge) => {
+    if (!mintingEnabled) return
     // Pre-check: If badge already minted onchain, don't open dialog
     if (badge.onchainMinted) {
       console.log(`[ClaimGrid] Badge ${badge.tier} already minted, skipping dialog`)
@@ -1174,10 +1178,14 @@ export function ClaimGrid() {
                       size="sm"
                       onClick={() => handleOpenDialog(badge)}
                       className={cn('rounded-full min-h-[44px]', meta.button)}
-                      disabled={isSyncingOnchain || isPreCheckPending}
+                      disabled={!mintingEnabled || isSyncingOnchain || isPreCheckPending}
                       aria-busy={isPreCheckPending}
                     >
-                      {isSyncingOnchain || isPreCheckPending ? 'Checking...' : 'Claim badge'}
+                      {!mintingEnabled
+                        ? 'Coming soon'
+                        : isSyncingOnchain || isPreCheckPending
+                          ? 'Checking...'
+                          : 'Claim badge'}
                     </Button>
                   </div>
                 </div>

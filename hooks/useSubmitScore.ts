@@ -1,6 +1,7 @@
 'use client'
 
 import { useCallback, useState } from 'react'
+import { FEATURES } from '@/lib/featureFlags'
 import { submitScore as submitScoreApi } from '@/lib/leaderboard/leaderboardClient'
 import { useBadgeContract } from '@/hooks/useBadgeContract'
 
@@ -30,7 +31,9 @@ export function useSubmitScore() {
 
   const submitScore = useCallback(
     async (address: string, score: number, options?: SubmitScoreOptions): Promise<void> => {
-      const { submitOnchain = true, onOnchainSuccess, onOnchainCancel } = options || {}
+      // Off-chain phase: never submit on-chain regardless of options
+      const submitOnchain = (options?.submitOnchain ?? true) && FEATURES.ONCHAIN_SCORE_SUBMISSION
+      const { onOnchainSuccess, onOnchainCancel } = options || {}
       setStatus('submitting')
       setError(null)
 

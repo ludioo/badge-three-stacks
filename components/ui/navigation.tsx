@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { FEATURES } from '@/lib/featureFlags'
 import { cn } from '@/lib/utils'
 import { WalletConnect } from './wallet-connect'
 
@@ -48,9 +49,11 @@ export default function Navigation() {
                 </Link>
               ))}
             </div>
-            <div className="hidden md:flex items-center gap-3 shrink-0">
-              <WalletConnect />
-            </div>
+            {FEATURES.WALLET_REQUIRED && (
+              <div className="hidden md:flex items-center gap-3 shrink-0">
+                <WalletConnect />
+              </div>
+            )}
             <button
               type="button"
               className="md:hidden shrink-0 inline-flex items-center justify-center w-11 h-11 rounded-md border border-[#FD9E7F] bg-white p-2 text-[#F4622F] hover:bg-[#FD9E7F]/10"
@@ -89,12 +92,14 @@ export default function Navigation() {
                 </Link>
               ))}
             </div>
-            <div className="pt-4 mt-2 border-t border-[#FD9E7F]/30">
-              <p className="text-xs font-semibold uppercase tracking-wide text-[#4B5563] mb-2 px-1">Wallet</p>
-              <div className="w-full">
-                <WalletConnect variant="menu" />
+            {FEATURES.WALLET_REQUIRED && (
+              <div className="pt-4 mt-2 border-t border-[#FD9E7F]/30">
+                <p className="text-xs font-semibold uppercase tracking-wide text-[#4B5563] mb-2 px-1">Wallet</p>
+                <div className="w-full">
+                  <WalletConnect variant="menu" />
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </div>

@@ -13,7 +13,7 @@ todos:
     status: completed
   - id: disable-onchain
     content: Create feature flags and disable all on-chain features for off-chain phase
-    status: pending
+    status: completed
   - id: unit-tests
     content: Update all unit tests to reflect Threes game mechanics
     status: in_progress
@@ -225,7 +225,7 @@ Badge Threes should spawn 1, 2, or 3 with weighted probabilities.
 
 ---
 
-## Phase 3: Disable On-chain Features
+## Phase 3: Disable On-chain Features ✅ (Complete)
 
 ### 3.1 Feature Flag System
 

@@ -3,13 +3,14 @@
  *
  * Verifies:
  * - App is running
- * - Stacks contract is reachable (read-only get-last-token-id via Hiro API)
+ * - Stacks contract is reachable when on-chain enabled (read-only get-last-token-id via Hiro API)
  *
- * Returns 200 when contract is reachable (or not configured); 503 when contract unreachable.
- * No secrets; uses NEXT_PUBLIC_* and server config only.
+ * Returns 200 when contract is reachable (or not configured / on-chain disabled); 503 when contract unreachable.
+ * Includes feature flag status for observability.
  */
 
 import { NextResponse } from 'next/server';
+import { FEATURES } from '@/lib/featureFlags';
 import { contractConfig, apiUrl, isTestnet } from '@/lib/stacks/config';
 
 export const dynamic = 'force-dynamic';
@@ -17,11 +18,18 @@ export const revalidate = 0;
 
 export async function GET() {
   const network = isTestnet ? 'testnet' : 'mainnet';
+  const features = {
+    onchainEnabled: FEATURES.ONCHAIN_ENABLED,
+    badgeMinting: FEATURES.BADGE_MINTING,
+    onchainScoreSubmission: FEATURES.ONCHAIN_SCORE_SUBMISSION,
+    walletRequired: FEATURES.WALLET_REQUIRED,
+  };
+
   const address = contractConfig.address;
   const [deployer, contractName] = (address || '').split('.');
-  if (!address || !deployer || !contractName) {
+  if (!FEATURES.ONCHAIN_ENABLED || !address || !deployer || !contractName) {
     return NextResponse.json(
-      { status: 'ok', contract: 'not_configured', network },
+      { status: 'ok', contract: FEATURES.ONCHAIN_ENABLED ? 'not_configured' : 'disabled', network, features },
       { status: 200 }
     );
   }
@@ -42,6 +50,7 @@ export async function GET() {
           status: 'degraded',
           contract: 'unreachable',
           network,
+          features,
           error: `${res.status} ${res.statusText}`,
           details: text.slice(0, 200),
         },
@@ -56,6 +65,7 @@ export async function GET() {
           status: 'degraded',
           contract: 'error',
           network,
+          features,
           error: 'Contract read returned not okay',
         },
         { status: 503 }
@@ -67,6 +77,7 @@ export async function GET() {
         status: 'ok',
         contract: 'reachable',
         network,
+        features,
       },
       { status: 200 }
     );
@@ -77,6 +88,7 @@ export async function GET() {
         status: 'degraded',
         contract: 'unreachable',
         network,
+        features,
         error: message.slice(0, 200),
       },
       { status: 503 }

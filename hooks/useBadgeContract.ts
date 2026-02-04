@@ -3,15 +3,19 @@
 /**
  * Badge Contract Interaction Hook
  * 
- * Hook untuk berinteraksi dengan Badge2048 smart contract
+ * Hook untuk berinteraksi dengan Badge Threes smart contract.
+ * When FEATURES.BADGE_MINTING is false, contract calls return early with a clear error.
  */
 
 import { useConnect } from '@stacks/connect-react';
 import { useState } from 'react';
 import { stringAsciiCV, uintCV, principalCV } from '@stacks/transactions';
+import { FEATURES } from '@/lib/featureFlags';
 import { network, contractConfig, getExplorerUrl } from '@/lib/stacks/config';
 import { CONTRACT_FUNCTIONS, ERROR_MESSAGES } from '@/lib/stacks/constants';
-import type { TransactionResult, MintBadgeOptions, UpdateHighScoreOptions, BadgeTier } from '@/lib/stacks/types';
+import type { TransactionResult, MintBadgeOptions, UpdateHighScoreOptions } from '@/lib/stacks/types';
+
+const OFFCHAIN_MESSAGE = 'Badge minting is disabled in off-chain mode.';
 
 export function useBadgeContract() {
   const { doContractCall } = useConnect();
@@ -23,6 +27,12 @@ export function useBadgeContract() {
    * Mint badge NFT
    */
   const mintBadge = async (options: MintBadgeOptions): Promise<TransactionResult> => {
+    if (!FEATURES.BADGE_MINTING) {
+      const result: TransactionResult = { status: 'error', error: OFFCHAIN_MESSAGE };
+      setTransactionResult(result);
+      return result;
+    }
+
     const { tier, score, onFinish, onCancel } = options;
 
     setTransactionResult({ status: 'pending' });
@@ -74,9 +84,15 @@ export function useBadgeContract() {
   };
 
   /**
-   * Update high score
+   * Update high score on-chain
    */
   const updateHighScore = async (options: UpdateHighScoreOptions): Promise<TransactionResult> => {
+    if (!FEATURES.ONCHAIN_SCORE_SUBMISSION) {
+      const result: TransactionResult = { status: 'error', error: 'On-chain score submission is disabled in off-chain mode.' };
+      setTransactionResult(result);
+      return result;
+    }
+
     const { score, onFinish, onCancel } = options;
 
     setTransactionResult({ status: 'pending' });
@@ -142,9 +158,15 @@ export function useBadgeContract() {
     tokenId: number;
     sender: string;
     recipient: string;
-    onFinish?: (data: any) => void;
+    onFinish?: (data: unknown) => void;
     onCancel?: () => void;
   }): Promise<TransactionResult> => {
+    if (!FEATURES.ONCHAIN_ENABLED) {
+      const result: TransactionResult = { status: 'error', error: OFFCHAIN_MESSAGE };
+      setTransactionResult(result);
+      return result;
+    }
+
     const { tokenId, sender, recipient, onFinish, onCancel } = options;
 
     setTransactionResult({ status: 'pending' });

@@ -1,14 +1,15 @@
 /**
  * POST /api/leaderboard/sync
- * 
+ *
  * Sync endpoint for syncing onchain high scores to offchain store.
- * This can be called periodically by a cron job or after onchain updates.
- * 
+ * When on-chain is disabled, returns 200 with message (no sync performed).
+ *
  * Body: { addresses?: string[] } - optional list of addresses to sync.
  * If not provided, syncs all addresses currently in the store.
  */
 
 import { NextRequest, NextResponse } from 'next/server'
+import { FEATURES } from '@/lib/featureFlags'
 import { fetchAllOnchainHighScores } from '@/lib/leaderboard/onchainSync'
 import { submitScore, getTop } from '@/lib/leaderboard/store'
 import { parseAddress } from '@/lib/leaderboard/validate'
@@ -20,6 +21,12 @@ function err(code: string, message: string, status: number) {
 }
 
 export async function POST(request: NextRequest) {
+  if (!FEATURES.ONCHAIN_SCORE_SUBMISSION) {
+    return NextResponse.json({
+      data: { synced: 0, errors: 0, message: 'On-chain disabled; sync skipped' },
+    })
+  }
+
   let body: unknown
   try {
     body = await request.json()

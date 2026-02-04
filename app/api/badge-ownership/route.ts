@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getBadgeOwnershipAllTiers } from '@/lib/stacks/badgeOwnershipServer';
+import { FEATURES } from '@/lib/featureFlags';
 import { contractConfig, isTestnet } from '@/lib/stacks/config';
 
 export const dynamic = 'force-dynamic';
 
-/** GET /api/badge-ownership?address=SP... — baca ownership semua tier lewat backend (Hiro) */
+/** GET /api/badge-ownership?address=SP... — baca ownership semua tier lewat backend (Hiro). Returns empty when on-chain disabled. */
 export async function GET(request: NextRequest) {
   const address = request.nextUrl.searchParams.get('address');
   if (!address || typeof address !== 'string' || address.trim() === '') {
@@ -23,10 +24,16 @@ export async function GET(request: NextRequest) {
     );
   }
 
+  if (!FEATURES.ONCHAIN_ENABLED) {
+    const res = NextResponse.json({ data: {} });
+    res.headers.set('X-Stacks-Network', isTestnet ? 'testnet' : 'mainnet');
+    res.headers.set('X-Onchain-Enabled', 'false');
+    return res;
+  }
+
   try {
     const data = await getBadgeOwnershipAllTiers(trimmed);
     const res = NextResponse.json({ data });
-    // Expose network/contract so frontend or devtools can verify mainnet vs testnet
     res.headers.set('X-Stacks-Network', isTestnet ? 'testnet' : 'mainnet');
     res.headers.set('X-Contract-Address', contractConfig.address);
     return res;

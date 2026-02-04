@@ -2,6 +2,7 @@
 
 import { ClaimGrid } from '@/components/badge/ClaimGrid'
 import { useStacksWallet } from '@/hooks/useStacksWallet'
+import { FEATURES } from '@/lib/featureFlags'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { useEffect, useState } from 'react'
 
@@ -9,6 +10,7 @@ export default function ClaimPage() {
   const { isAuthenticated, address } = useStacksWallet()
   // Force re-render when wallet status changes via events
   const [, forceUpdate] = useState({})
+  const mintingEnabled = FEATURES.BADGE_MINTING
 
   // Listen to wallet connect/disconnect events for real-time updates
   useEffect(() => {
@@ -40,8 +42,20 @@ export default function ClaimPage() {
         </p>
       </div>
 
-      {/* Wallet Connection Status - Informational Only */}
-      {!isAuthenticated && (
+      {/* Off-chain mode: minting disabled */}
+      {!mintingEnabled && (
+        <Alert className="mb-6 border-slate-300 bg-slate-50 text-[#171717]">
+          <AlertTitle className="text-sm sm:text-base font-semibold text-[#374151]">
+            Off-chain mode
+          </AlertTitle>
+          <AlertDescription className="mt-2 text-sm text-[#4B5563]">
+            Badge minting on the blockchain is disabled for now. You can still view and unlock badges by playing. On-chain minting will be available in a future update.
+          </AlertDescription>
+        </Alert>
+      )}
+
+      {/* Wallet Connection Status - Informational Only (only when minting is enabled) */}
+      {mintingEnabled && !isAuthenticated && (
         <Alert className="mb-6 border-[#FD9E7F]/50 bg-[#FD9E7F]/15 text-[#171717]">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -72,8 +86,8 @@ export default function ClaimPage() {
         </Alert>
       )}
 
-      {/* Wallet Connected Status */}
-      {isAuthenticated && address && (
+      {/* Wallet Connected Status (only when minting enabled) */}
+      {mintingEnabled && isAuthenticated && address && (
         <div className="mb-6 rounded-lg border border-[#FD9E7F]/50 bg-[#FD9E7F]/15 p-3 sm:p-4">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
             <div className="flex items-center gap-2">

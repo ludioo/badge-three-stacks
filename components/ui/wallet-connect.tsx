@@ -5,9 +5,11 @@
  *
  * - Default: inline in navbar (desktop).
  * - variant="menu": full-width stacked layout for mobile dropdown.
+ * - When FEATURES.WALLET_REQUIRED is false, renders nothing (off-chain mode).
  */
 
 import { useStacksWallet } from '@/hooks/useStacksWallet';
+import { FEATURES } from '@/lib/featureFlags';
 import { cn } from '@/lib/utils';
 
 type WalletConnectProps = {
@@ -16,6 +18,10 @@ type WalletConnectProps = {
 }
 
 export function WalletConnect({ variant = 'inline' }: WalletConnectProps) {
+  if (!FEATURES.WALLET_REQUIRED) {
+    return null;
+  }
+
   const { isAuthenticated, address, connectWallet, disconnectWallet, isAuthenticating } = useStacksWallet();
   const isMenu = variant === 'menu';
 
