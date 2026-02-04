@@ -1,6 +1,8 @@
 # Badge System Specification
 
-**Application Name:** badge2048
+**Application Name:** Badge Threes
+
+**Off-chain phase:** Badges are unlocked and claimed locally; they are **display-only** from an on-chain perspective. NFT minting is disabled via feature flags. See [OFFCHAIN-PHASE.md](./OFFCHAIN-PHASE.md).
 
 ## Purpose
 

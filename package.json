@@ -1,6 +1,7 @@
 {
-  "name": "2048",
+  "name": "badge-threes",
   "version": "0.1.0",
+  "description": "Badge Threes — Threes-style puzzle on Stacks. Power-of-3 merge mechanics, local badges, off-chain leaderboard; optional on-chain minting.",
   "private": true,
   "scripts": {
     "dev": "next dev",

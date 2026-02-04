@@ -1,6 +1,8 @@
-# Claim Flow Specification (Pre-Chain)
+# Claim Flow Specification
 
-**Application Name:** badge2048
+**Application Name:** Badge Threes
+
+**Off-chain mode:** In the current off-chain phase, claim is local-only (state saved to `localStorage`). Minting as NFT on Stacks is disabled via feature flags. Claim page may show "Coming soon" or similar for minting. See [OFFCHAIN-PHASE.md](./OFFCHAIN-PHASE.md).
 
 ## Flow Overview
 
@@ -56,12 +58,12 @@ After claim:
 
 ## Implementation Notes
 
-### Current (Pre-Chain MVP)
+### Current (Off-Chain Phase)
 
-* All state management is frontend-only
-* No wallet interaction
-* No blockchain transaction
-* Local storage persistence
+* All state management is frontend-only for claim state
+* No wallet required; no blockchain transaction for minting (minting disabled)
+* Local storage persistence for claimed state
+* Leaderboard can work without wallet (off-chain)
 
 ### Future (On-Chain)
 

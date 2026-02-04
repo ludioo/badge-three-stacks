@@ -76,7 +76,7 @@ Use this checklist to validate game playability and off-chain behaviour before r
 
 | Date       | Tester | Notes |
 |-----------|--------|--------|
-|            |        |        |
+| 2025-02-05 | Manual | All items verified; game start, merge, spawn, game over, score, UI/UX, off-chain behaviour — passed. |
 
 ---
 

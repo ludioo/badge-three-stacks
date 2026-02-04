@@ -1,15 +1,17 @@
 # MVP Scope
 
-**Application Name:** badge2048
+**Application Name:** Badge Threes
+
+**Phase:** Off-chain. Threes (Power-of-3) mechanics; on-chain minting and on-chain score submission disabled. See [OFFCHAIN-PHASE.md](./OFFCHAIN-PHASE.md).
 
 ## Included Features
 
 ### Core Gameplay
 
-* ✅ Full puzzle gameplay (2048 mechanics)
+* ✅ Full puzzle gameplay (Threes / Power-of-3 mechanics: 1+2→3, 3+3→6, etc.)
 * ✅ 4×4 grid with tile merging
 * ✅ Score system with incremental scoring
-* ✅ Game over detection
+* ✅ Game over detection (no valid moves)
 * ✅ Keyboard controls (arrow keys)
 * ✅ Touch swipe controls
 * ✅ Mouse drag controls
@@ -36,25 +38,26 @@
 * ✅ `/play` - Game page
 * ✅ `/claim` - Claim page
 * ✅ `/badges` - Badges display page
+* ✅ `/leaderboard` - Leaderboard (off-chain)
 * ✅ Navigation between pages
 
 ### Claim Flow
 
-* ✅ Frontend-only claim flow
+* ✅ Frontend-only claim flow (local claim)
 * ✅ Claim button and confirmation
 * ✅ State update after claim
 * ✅ Badge persistence (local storage)
+* ✅ Off-chain mode messaging when minting is disabled
 
 ### Persistence
 
 * ✅ Badge state saved to local storage
 * ✅ Badges persist across sessions
 
-## Out of Scope (MVP)
+## Out of Scope (Current Off-Chain MVP)
 
-* ❌ On-chain minting
-* ❌ Wallet connect
-* ❌ Leaderboard
+* ❌ On-chain minting (disabled via feature flags)
+* ❌ Wallet required (optional; hidden or not required in off-chain phase)
 * ❌ On-chain score verification
 * ❌ Anti-cheat mechanisms
 * ❌ Tokenomics

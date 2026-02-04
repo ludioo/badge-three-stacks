@@ -22,10 +22,10 @@ todos:
     status: completed
   - id: documentation
     content: Update all documentation, README, and create off-chain phase docs
-    status: pending
+    status: completed
   - id: manual-testing
     content: Complete manual testing checklist to validate game playability
-    status: pending
+    status: completed
 isProject: false
 ---
 
@@ -458,6 +458,8 @@ Add health check in `/api/health` to report feature flag status.
 
 - Update OpenGraph images/descriptions
 - Update site name throughout
+
+**Phase 5 implementation status:** Complete. All documentation updated (README, GAME-MECHANICS, THREES-RULES, OFFCHAIN-PHASE, BADGE-SYSTEM, CLAIM-FLOW, MVP-SCOPE, badge-three-prd implementation status); package.json and .env.example updated; manual testing checklist signed off (2025-02-05). Icon/favicon refresh remains optional (see docs/OFFCHAIN-PHASE.md).
 
 ---
 

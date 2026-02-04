@@ -204,7 +204,25 @@ These are deferred to a future PRD.
 
 ---
 
-## 11. Summary
+## 11. Implementation Status (Off-Chain Phase)
+
+| Area | Status | Notes |
+|------|--------|--------|
+| Rule engine | ✅ Done | `lib/game/rules/mergeRule.ts`, `spawnRule.ts`, `types.ts` |
+| Core game logic | ✅ Done | Merge, spawn, checkGameOver use Threes rules |
+| UI rebranding | ✅ Done | Badge Threes text, tile colors, instructions |
+| Feature flags | ✅ Done | `lib/featureFlags.ts`; on-chain disabled |
+| Unit tests | ✅ Done | Threes rules and game flow covered |
+| E2E tests | ✅ Done | Play, claim, leaderboard for off-chain mode |
+| Documentation | ✅ Done | README, GAME-MECHANICS, THREES-RULES, OFFCHAIN-PHASE, BADGE-SYSTEM, CLAIM-FLOW, MVP-SCOPE |
+| On-chain minting | 🔒 Disabled | Re-enable via feature flags for testnet/mainnet |
+| On-chain score | 🔒 Disabled | Re-enable via feature flags for testnet/mainnet |
+
+See [docs/OFFCHAIN-PHASE.md](OFFCHAIN-PHASE.md) and [docs/plan/badge_threes_off-chain_implementation_cdf96f44.plan.md](plan/badge_threes_off-chain_implementation_cdf96f44.plan.md) for details.
+
+---
+
+## 12. Summary
 
 Badge Threes is a deliberate evolution of Badge2048.
 
