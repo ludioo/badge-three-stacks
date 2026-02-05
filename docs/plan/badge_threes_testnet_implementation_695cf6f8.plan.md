@@ -16,10 +16,10 @@ todos:
     status: completed
   - id: phase5-badge-display
     content: "Phase 5: Badge Display Integration - Update Badges page to fetch on-chain badges, merge with off-chain state, update BadgeCard with on-chain status"
-    status: pending
+    status: completed
   - id: phase6-error-handling
     content: "Phase 6: Error Handling & Transaction UI - Create error components (ErrorToast, ErrorModal), implement error handling strategy"
-    status: pending
+    status: completed
   - id: phase7-testing
     content: "Phase 7: Testing & Validation - Update unit tests, update E2E tests, manual testing on devices, create testing documentation"
     status: pending
@@ -797,6 +797,16 @@ const mergedBadges = useMemo(() => {
 - Skeleton loaders while fetching
 - Error states with retry
 
+### 5.4 Phase 5 Completion Checklist
+
+- [x] Badges page: metadata and description updated for Badge Threes and on-chain display
+- [x] BadgesGrid: fetches on-chain ownership via `/api/badge-ownership`, merges with off-chain state (effectiveBadges from onchainByTier + highScore)
+- [x] BadgesGrid: sync status label (Syncing… / Synced / Wallet not connected) and "Refresh on-chain status" button
+- [x] BadgeCard: shows "Minted on-chain" + token ID when `onchainMinted === true`; link to Stacks Explorer when `txId` exists
+- [x] BadgeCard: for claimed-but-not-minted badges, shows link to Claim page to mint on-chain
+
+**Phase 5 status: ✅ Complete** — Badge display shows on-chain status, sync/refresh, and explorer links; ready for Phase 6 (Error Handling).
+
 ---
 
 ## Phase 6: Error Handling & Transaction UI
@@ -871,6 +881,18 @@ export const isRetryableError = (errorCode: number): boolean => {
   return [1005].includes(errorCode) // Insufficient funds is retryable
 }
 ```
+
+### 6.5 Phase 6 Completion Checklist
+
+- [x] Error handling strategy documented (error table with codes, user messages, actions)
+- [x] ErrorToast component: `components/ui/error-toast.tsx` — non-critical, auto-dismiss 5s, optional retry/close, severity (error, warning, info)
+- [x] ErrorModal component: `components/ui/error-modal.tsx` — critical, require dismiss, optional help link, Retry/Cancel/Get help
+- [x] Error utilities in `lib/stacks/constants.ts`: `getErrorMessage(errorCode)`, `isRetryableError(errorCode)`; `ERROR_MESSAGES` aligned with plan
+- [x] BadgesGrid: sync errors shown via ErrorToast with retry
+- [x] ClaimGrid: contract errors use `getErrorMessage()`; ErrorModal for insufficient STX (1005) with testnet faucet link and retry
+- [x] Config: `testnetFaucetUrl` added for Phase 6 (link to faucet in error modal)
+
+**Phase 6 status: ✅ Complete** — Error components and strategy in place; ready for Phase 7 (Testing).
 
 ---
 

@@ -51,12 +51,26 @@ export const ERROR_CODES = {
   ERR_NOT_FOUND: 1006,
 } as const;
 
-// Error messages mapping
+// Error messages mapping (user-facing; align with plan Phase 6 error handling strategy)
 export const ERROR_MESSAGES: Record<number, string> = {
   [ERROR_CODES.ERR_INVALID_TIER]: 'Invalid badge tier',
   [ERROR_CODES.ERR_SCORE_TOO_LOW]: 'Score is too low for this badge tier',
-  [ERROR_CODES.ERR_ALREADY_MINTED]: 'Badge already minted for this wallet. You can only mint each badge tier once.',
+  [ERROR_CODES.ERR_ALREADY_MINTED]: "You've already minted this badge!",
   [ERROR_CODES.ERR_UNAUTHORIZED]: 'Unauthorized operation',
-  [ERROR_CODES.ERR_INSUFFICIENT_FUNDS]: 'Insufficient STX for transaction',
+  [ERROR_CODES.ERR_INSUFFICIENT_FUNDS]: 'Insufficient STX for transaction fee. Get testnet STX from a faucet and try again.',
   [ERROR_CODES.ERR_NOT_FOUND]: 'Resource not found',
 };
+
+/**
+ * Returns a user-friendly message for a contract error code.
+ */
+export function getErrorMessage(errorCode: number): string {
+  return ERROR_MESSAGES[errorCode] ?? 'Unknown error occurred'
+}
+
+/**
+ * Whether the error is retryable (e.g. after user adds STX).
+ */
+export function isRetryableError(errorCode: number): boolean {
+  return errorCode === ERROR_CODES.ERR_INSUFFICIENT_FUNDS
+}

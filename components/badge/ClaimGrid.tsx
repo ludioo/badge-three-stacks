@@ -23,12 +23,13 @@ import { updateBadgeWithOnchainData } from '@/lib/badges'
 import { invalidateBadgeOwnershipCache } from '@/lib/badgeOwnershipCache'
 import { loadHighScore } from '@/lib/highScore'
 import { fetchBadgeOwnership, getOwnershipForTier } from '@/lib/stacks/badgeOwnershipClient'
-import { apiUrl, isTestnet } from '@/lib/stacks/config'
-import { ERROR_MESSAGES } from '@/lib/stacks/constants'
+import { apiUrl, isTestnet, testnetFaucetUrl } from '@/lib/stacks/config'
+import { getErrorMessage } from '@/lib/stacks/constants'
 import {
   TransactionStatus as TransactionStatusUI,
   type TransactionStatusType,
 } from '@/components/ui/transaction-status'
+import { ErrorModal } from '@/components/ui/error-modal'
 
 type TransactionStatus = TransactionStatusType
 
@@ -50,6 +51,7 @@ export function ClaimGrid() {
   const [transactionStatus, setTransactionStatus] = useState<TransactionStatus>('idle')
   const [transactionTxId, setTransactionTxId] = useState<string | null>(null)
   const [transactionError, setTransactionError] = useState<string | null>(null)
+  const [transactionErrorCode, setTransactionErrorCode] = useState<number | null>(null)
   const [isPolling, setIsPolling] = useState(false)
   const [pollCount, setPollCount] = useState(0)
   const pollingIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
@@ -229,6 +231,7 @@ export function ClaimGrid() {
       setTransactionStatus('idle')
       setTransactionTxId(null)
       setTransactionError(null)
+      setTransactionErrorCode(null)
       isPollingActiveRef.current = false
       setIsPolling(false)
       setPollCount(0)
@@ -674,12 +677,7 @@ export function ClaimGrid() {
           
           // Map error code to user-friendly message
           if (errorCode) {
-            const mappedMessage = ERROR_MESSAGES[errorCode]
-            if (mappedMessage) {
-              errorMessage = mappedMessage
-            } else {
-              errorMessage = `Transaction failed with error code ${errorCode}. Please check the transaction details.`
-            }
+            errorMessage = getErrorMessage(errorCode)
           } else {
             // Fallback to generic message or vm_error if available
             const vmError = data?.vm_error || data?.tx_result?.error || null
@@ -707,6 +705,7 @@ export function ClaimGrid() {
           setPollCount(0)
           setTransactionStatus('error')
           setTransactionError(errorMessage)
+          setTransactionErrorCode(errorCode)
           setIsClaiming(false)
           // When contract says "already minted" (1003), refresh onchain state so
           // this tier no longer appears as claimable and user sees correct list.
@@ -838,7 +837,8 @@ export function ClaimGrid() {
     setTransactionStatus('pending')
     setTransactionError(null)
     setTransactionTxId(null)
-    
+    setTransactionErrorCode(null)
+
     // Clear any existing timers
     if (claimTimerRef.current) {
       clearTimeout(claimTimerRef.current)
@@ -1391,6 +1391,20 @@ export function ClaimGrid() {
           </DialogContent>
         )}
       </Dialog>
+
+      {/* Critical error modal for insufficient STX (1005) — link to faucet on testnet */}
+      <ErrorModal
+        open={transactionStatus === 'error' && transactionErrorCode === 1005}
+        onOpenChange={(open) => {
+          if (!open) setTransactionErrorCode(null)
+        }}
+        title="Insufficient STX"
+        message={transactionError ?? getErrorMessage(1005)}
+        suggestedSteps={isTestnet ? 'Get testnet STX from the faucet, then try again.' : undefined}
+        helpHref={isTestnet ? testnetFaucetUrl : undefined}
+        helpLabel={isTestnet ? 'Get testnet STX' : undefined}
+        onRetry={handleConfirmClaim}
+      />
     </div>
   )
 }

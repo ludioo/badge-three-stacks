@@ -1,9 +1,11 @@
 'use client'
 
 import Link from 'next/link'
+import { CheckCircle2, ExternalLink } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { Badge } from '@/lib/game/types'
 import { badgeTierMeta } from '@/components/badge/badgeMeta'
+import { badgeNeedsMinting } from '@/lib/badges'
 
 type BadgeCardProps = {
   badge: Badge
@@ -15,14 +17,16 @@ export function BadgeCard({ badge }: BadgeCardProps) {
   const isUnlocked = badge.unlocked && !badge.claimed
   const isLocked = !badge.unlocked
   const claimedAt = badge.claimedAt
+  const isOnchain = badge.onchainMinted === true
+  const needsOnchainMint = badgeNeedsMinting(badge)
 
   // Check if softBackground contains tiger-flame colors that need white text
-  const needsWhiteText = !isLocked && (
-    isClaimed || 
-    badge.tier === 'silver' || 
-    badge.tier === 'gold' || 
-    badge.tier === 'elite'
-  )
+  const needsWhiteText =
+    !isLocked &&
+    (isClaimed ||
+      badge.tier === 'silver' ||
+      badge.tier === 'gold' ||
+      badge.tier === 'elite')
 
   const statusLabel = isClaimed ? 'Owned' : isUnlocked ? 'Claim' : 'Locked'
   const statusClassName = cn(
@@ -56,8 +60,15 @@ export function BadgeCard({ badge }: BadgeCardProps) {
     if (!value) return '—'
     const parsed = new Date(value)
     if (Number.isNaN(parsed.getTime())) return '—'
-    return parsed.toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' })
+    return parsed.toLocaleString('en-US', {
+      dateStyle: 'medium',
+      timeStyle: 'short',
+    })
   }
+
+  const explorerUrl =
+    badge.txId &&
+    `https://explorer.stacks.co/txid/${badge.txId}?chain=testnet`
 
   return (
     <div className={cardClassName}>
@@ -67,10 +78,28 @@ export function BadgeCard({ badge }: BadgeCardProps) {
             {meta.iconSvg}
           </div>
           <div>
-            <p className={cn('text-lg font-semibold', isLocked ? 'text-slate-500' : needsWhiteText ? 'text-white' : meta.accent)}>
+            <p
+              className={cn(
+                'text-lg font-semibold',
+                isLocked
+                  ? 'text-slate-500'
+                  : needsWhiteText
+                  ? 'text-white'
+                  : meta.accent
+              )}
+            >
               {meta.label}
             </p>
-            <p className={cn('text-sm', isLocked ? 'text-slate-400' : needsWhiteText ? 'text-white/90' : 'text-slate-600')}>
+            <p
+              className={cn(
+                'text-sm',
+                isLocked
+                  ? 'text-slate-400'
+                  : needsWhiteText
+                  ? 'text-white/90'
+                  : 'text-slate-600'
+              )}
+            >
               {meta.description}
             </p>
           </div>
@@ -80,8 +109,27 @@ export function BadgeCard({ badge }: BadgeCardProps) {
 
       <div className="mt-4">
         <div className="flex items-center justify-between text-sm">
-          <span className={cn(isLocked ? 'text-slate-500' : needsWhiteText ? 'text-white/80' : 'text-slate-500')}>Score target</span>
-          <span className={cn('font-semibold', isLocked ? 'text-slate-500' : needsWhiteText ? 'text-white' : meta.accent)}>
+          <span
+            className={cn(
+              isLocked
+                ? 'text-slate-500'
+                : needsWhiteText
+                ? 'text-white/80'
+                : 'text-slate-500'
+            )}
+          >
+            Score target
+          </span>
+          <span
+            className={cn(
+              'font-semibold',
+              isLocked
+                ? 'text-slate-500'
+                : needsWhiteText
+                ? 'text-white'
+                : meta.accent
+            )}
+          >
             {badge.threshold.toLocaleString()}
           </span>
         </div>
@@ -93,11 +141,21 @@ export function BadgeCard({ badge }: BadgeCardProps) {
         )}
 
         {isUnlocked && (
-          <p className={cn('mt-3 text-xs', needsWhiteText ? 'text-white/90' : 'text-[#F4622F]')}>
+          <p
+            className={cn(
+              'mt-3 text-xs',
+              needsWhiteText ? 'text-white/90' : 'text-[#F4622F]'
+            )}
+          >
             Claim available in the{' '}
-            <Link 
-              href="/claim" 
-              className={cn('font-semibold underline underline-offset-2', needsWhiteText ? 'text-white hover:text-white/80' : 'text-[#F4622F] hover:text-[#E8552A]')}
+            <Link
+              href="/claim"
+              className={cn(
+                'font-semibold underline underline-offset-2',
+                needsWhiteText
+                  ? 'text-white hover:text-white/80'
+                  : 'text-[#F4622F] hover:text-[#E8552A]'
+              )}
             >
               Claim page
             </Link>
@@ -106,9 +164,53 @@ export function BadgeCard({ badge }: BadgeCardProps) {
         )}
 
         {isClaimed && (
-          <div className="mt-3 space-y-1 text-xs text-white/90">
-            <p>Claimed and displayed in your collection.</p>
-            <p className="text-white/70">Last updated: {formatClaimedAt(claimedAt)}</p>
+          <div className="mt-3 space-y-2 text-xs text-white/90">
+            <div>
+              <p>Claimed and displayed in your collection.</p>
+              <p className="text-white/70">
+                Last updated: {formatClaimedAt(claimedAt)}
+              </p>
+            </div>
+
+            <div className="mt-2 space-y-1">
+              {isOnchain ? (
+                <div className="flex items-center gap-1 text-[11px] font-medium text-emerald-100">
+                  <CheckCircle2 className="h-3.5 w-3.5" aria-hidden="true" />
+                  <span>Minted on-chain</span>
+                  {badge.tokenId !== undefined && (
+                    <span className="ml-1 opacity-80">
+                      · Token #{badge.tokenId}
+                    </span>
+                  )}
+                </div>
+              ) : (
+                needsOnchainMint && (
+                  <p className="text-[11px] text-white/80">
+                    This badge is owned off-chain. You can mint it as an NFT from
+                    the{' '}
+                    <Link
+                      href="/claim"
+                      className="font-semibold underline underline-offset-2 hover:text-white"
+                    >
+                      Claim page
+                    </Link>
+                    .
+                  </p>
+                )
+              )}
+
+              {explorerUrl && (
+                <a
+                  href={explorerUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-[11px] font-medium text-white/80 underline underline-offset-2 hover:text-white"
+                >
+                  <ExternalLink className="h-3 w-3" aria-hidden="true" />
+                  View transaction on Stacks Explorer
+                </a>
+              )}
+            </div>
           </div>
         )}
       </div>

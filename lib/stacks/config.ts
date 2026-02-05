@@ -49,6 +49,9 @@ export const apiUrls = {
 
 export const apiUrl = isTestnet ? apiUrls.testnet : apiUrls.mainnet;
 
+/** Testnet STX faucet URL for error modal (Phase 6: insufficient STX). */
+export const testnetFaucetUrl = 'https://explorer.hiro.so/sandbox/faucet?chain=testnet';
+
 // App details for wallet connection
 export const appDetails = {
   name: 'badgethrees-stacks',

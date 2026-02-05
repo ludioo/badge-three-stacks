@@ -10,6 +10,7 @@ import {
   getBadgeOwnershipCache,
   setBadgeOwnershipCache,
 } from '@/lib/badgeOwnershipCache'
+import { ErrorToast } from '@/components/ui/error-toast'
 
 export function BadgesGrid() {
   const { badges } = useBadges()
@@ -18,6 +19,8 @@ export function BadgesGrid() {
   // Ownership dibaca lewat backend /api/badge-ownership (mainnet/testnet dari env).
   const [onchainByTier, setOnchainByTier] = useState<Record<string, number | null> | null>(null)
   const [isSyncing, setIsSyncing] = useState(false)
+  const [refreshIndex, setRefreshIndex] = useState(0)
+  const [syncError, setSyncError] = useState<string | null>(null)
   // Current high score as source of truth for "unlocked" — avoids showing claimable from stale localStorage (e.g. testnet).
   const [highScore, setHighScore] = useState(0)
   useEffect(() => {
@@ -30,16 +33,18 @@ export function BadgesGrid() {
   useEffect(() => {
     if (!isAuthenticated || !address) {
       setOnchainByTier(null)
+      setIsSyncing(false)
       return
     }
     const cached = getBadgeOwnershipCache(address)
-    if (cached !== null) {
+    if (cached !== null && refreshIndex === 0) {
       setOnchainByTier(cached)
       return
     }
     let cancelled = false
     setIsSyncing(true)
     const run = async () => {
+      setSyncError(null)
       try {
         const res = await fetch(
           `/api/badge-ownership?address=${encodeURIComponent(address)}`
@@ -54,6 +59,7 @@ export function BadgesGrid() {
         if (!cancelled) {
           setBadgeOwnershipCache(address, data)
           setOnchainByTier(data)
+          setSyncError(null)
           // Diagnostic: verifikasi API pakai mainnet/testnet (cek header response)
           const apiNetwork = res.headers.get('X-Stacks-Network')
           const apiContract = res.headers.get('X-Contract-Address')
@@ -62,15 +68,20 @@ export function BadgesGrid() {
             'X-Contract-Address': apiContract,
           })
         }
-      } catch {
-        if (!cancelled) setOnchainByTier(null)
+      } catch (e) {
+        if (!cancelled) {
+          setOnchainByTier(null)
+          setSyncError(e instanceof Error ? e.message : 'Failed to load on-chain badge status.')
+        }
       } finally {
         if (!cancelled) setIsSyncing(false)
       }
     }
     run()
-    return () => { cancelled = true }
-  }, [isAuthenticated, address])
+    return () => {
+      cancelled = true
+    }
+  }, [isAuthenticated, address, refreshIndex])
 
   // effectiveBadges:
   // - Wallet disconnected → all locked (no stale localStorage).
@@ -136,8 +147,30 @@ export function BadgesGrid() {
     })
   }, [networkFromEnv, highScore, claimableCount, unlockedCount, onchainByTier])
 
+  const handleRefreshOnchain = () => {
+    if (!isAuthenticated || !address) return
+    setSyncError(null)
+    setOnchainByTier(null)
+    setIsSyncing(true)
+    setRefreshIndex((current) => current + 1)
+  }
+
+  const syncStatusLabel =
+    !isAuthenticated || !address
+      ? 'Wallet not connected – showing local progress only'
+      : isSyncing
+      ? 'Syncing on-chain badge status…'
+      : 'On-chain badge status synced'
+
   return (
     <div className="space-y-6">
+      <ErrorToast
+        open={!!syncError}
+        onClose={() => setSyncError(null)}
+        message={syncError ?? ''}
+        severity="warning"
+        onRetry={isAuthenticated && address ? handleRefreshOnchain : undefined}
+      />
       {isAuthenticated && address && isSyncing && (
         <div className="rounded-lg border border-[#FD9E7F]/50 bg-[#FD9E7F]/15 p-3 text-sm text-[#171717]">
           <p className="font-medium">Checking badge status with blockchain…</p>
@@ -180,6 +213,20 @@ export function BadgesGrid() {
         <div className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-slate-500">
           Locked: {lockedCount}
         </div>
+      </div>
+
+      <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500">
+        <p>{syncStatusLabel}</p>
+        {isAuthenticated && address && (
+          <button
+            type="button"
+            onClick={handleRefreshOnchain}
+            disabled={isSyncing}
+            className="rounded-full border border-slate-300 bg-white px-3 py-1 font-semibold uppercase tracking-wide text-[11px] text-slate-700 hover:bg-slate-50 disabled:opacity-60"
+          >
+            {isSyncing ? 'Syncing…' : 'Refresh on-chain status'}
+          </button>
+        )}
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

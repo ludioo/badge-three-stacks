@@ -2,8 +2,9 @@ import type { Metadata } from 'next'
 import { BadgesGrid } from '@/components/badge/BadgesGrid'
 
 export const metadata: Metadata = {
-  title: 'badge2048-stacks - Badges',
-  description: 'View all badge tiers and your unlock progress.',
+  title: 'badgethrees-stacks - Badges',
+  description:
+    'View all Badge Threes tiers, including on-chain NFTs and your unlock progress.',
 }
 
 export default function BadgesPage() {
@@ -12,7 +13,8 @@ export default function BadgesPage() {
       <div className="mb-6 sm:mb-8">
         <h1 className="text-2xl sm:text-3xl font-bold text-[#F4622F] mb-2">Badges</h1>
         <p className="text-sm sm:text-base text-[#4B5563]">
-          Track your unlocked badges and see what is ready to claim.
+          Track your unlocked badges, see which ones are minted on-chain, and what is
+          ready to claim.
         </p>
       </div>
 
