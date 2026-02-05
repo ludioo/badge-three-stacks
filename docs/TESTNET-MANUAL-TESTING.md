@@ -14,7 +14,7 @@ Use this checklist to validate on-chain flows (badge minting, high score sync, w
 ## 1. New User Flow
 
 - [ ] Open app with no wallet connected
-- [ ] Play game until a badge is unlocked (score ≥ 1024 for bronze)
+- [ ] Play game until a badge is unlocked (Bronze at score ≥ 384; Silver ≥ 768, Gold ≥ 1536, Elite ≥ 3072 — Threes uses lower thresholds than 2048 because Power-of-3 is harder)
 - [ ] Navigate to **Claim** page
 - [ ] See **Connect your wallet** prompt (no wallet)
 - [ ] Connect wallet via navigation (Leather or Hiro)

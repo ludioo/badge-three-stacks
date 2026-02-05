@@ -4,7 +4,7 @@
 
 **Blockchain: [Stacks](https://stacks.co) ($STX)** — This project uses Stacks only. All on-chain logic (Clarity contracts, Stacks Connect, leaderboard wallet identity, badge NFT minting) is Stacks-specific. For another chain you need different contracts, SDKs, and wallet integration.
 
-**Status:** **Off-chain phase.** Game, badges (local), and leaderboard work without a wallet. On-chain minting and on-chain score submission are disabled via feature flags. See [docs/OFFCHAIN-PHASE.md](docs/OFFCHAIN-PHASE.md) for what's disabled and the roadmap to testnet/mainnet.
+**Status:** **Testnet phase.** On-chain features are enabled: connect a Stacks wallet to mint badges as NFTs and sync high scores. Game and leaderboard work with or without a wallet. See [docs/OFFCHAIN-PHASE.md](docs/OFFCHAIN-PHASE.md) for phase details and [docs/USER-GUIDE.md](docs/USER-GUIDE.md) for wallet and minting steps.
 
 ---
 
@@ -19,7 +19,7 @@ Game logic lives in pure, tested functions; the UI is built with React and moder
 ## Features
 
 - **Threes gameplay** — 4×4 grid, slide/merge with Power-of-3 rules (1+2→3, 3+3→6, …). Keyboard (arrows), touch swipe, mouse drag. Game ends when no valid moves remain.
-- **Badge system** — Unlock at 1024 (Bronze), 2048 (Silver), 4096 (Gold), 8192 (Elite). Local persistence; optional on-chain mint as SIP-009 NFTs when enabled.
+- **Badge system** — Unlock at 384 (Bronze), 768 (Silver), 1536 (Gold), 3072 (Elite). Threes uses lower thresholds than 2048 (Power-of-3 is harder). Local persistence; optional on-chain mint as SIP-009 NFTs when enabled.
 - **Claim flow** — Claim unlocked badges on `/claim`. Local-only in off-chain phase; mint via Stacks ($STX) when contract is configured and feature flags allow.
 - **Stacks ($STX) wallet** — Optional in off-chain phase. When enabled: connect via Stacks Connect for leaderboard identity and on-chain minting.
 - **Leaderboard** — Off-chain; best score per wallet. Auto-submit on game over when connected. "Your rank" and top entries on `/leaderboard`.
@@ -110,7 +110,7 @@ npm install
 
 ### Environment variables
 
-In **off-chain phase**, Stacks env vars are optional. Copy the example and adjust when you enable on-chain:
+For **testnet**, set Stacks env vars so on-chain minting and badge-ownership work. Copy the example and set values:
 
 ```bash
 cp .env.example .env.local
@@ -118,12 +118,12 @@ cp .env.example .env.local
 
 | Variable | Required | Description |
 |----------|----------|-------------|
-| `NEXT_PUBLIC_STACKS_NETWORK` | No | `testnet` (default) or `mainnet` |
-| `NEXT_PUBLIC_CONTRACT_ADDRESS` | No* | `{deployer}.badgethrees` for on-chain mint when enabled; mainnet: `SP....badgethrees`; testnet: `ST....badgethrees` |
+| `NEXT_PUBLIC_STACKS_NETWORK` | For on-chain | `testnet` (default) or `mainnet` |
+| `NEXT_PUBLIC_CONTRACT_ADDRESS` | For on-chain | Testnet: `ST22ZCY5GAH27T4CK3ATG4QTZJQV6FXPRBAQ0BRW5.badgethrees`; mainnet: `SP....badgethrees` when deployed |
 | `NEXT_PUBLIC_CONTRACT_NAME` | No | `badgethrees` (default) |
-| `NEXT_PUBLIC_DEPLOYER_ADDRESS` | No | Deployer principal; mainnet `SP`, testnet `ST`; fallback if contract address unset |
+| `NEXT_PUBLIC_DEPLOYER_ADDRESS` | No | Deployer principal; testnet: `ST22ZCY5GAH27T4CK3ATG4QTZJQV6FXPRBAQ0BRW5`; mainnet: `SP...` when deployed |
 
-\* Needed only when on-chain mint and badge-ownership API are enabled. Game, local badges, and leaderboard work without it.
+Feature flags in `lib/featureFlags.ts` control whether minting and on-chain score are enabled; ensure they match your environment.
 
 ### Run locally
 
@@ -140,11 +140,17 @@ npm run build
 npm run start
 ```
 
-### Deploying to Vercel
+### Wallet connection (testnet)
 
-- **Build command** must be `npm run build` (defined in `vercel.json`). Do **not** override it in Vercel Dashboard with a custom script that exits on production, or production builds will fail.
-- Set environment variables in **Project → Settings → Environment Variables** (see table above; for production with on-chain: use mainnet values).
-- See **[docs/VERCEL-DEPLOY.md](docs/VERCEL-DEPLOY.md)** and **[docs/TESTNET-TO-MAINNET-MIGRATION-PLAN.md](docs/TESTNET-TO-MAINNET-MIGRATION-PLAN.md)** for full deploy and migration steps.
+- Install **Leather** or **Hiro** wallet and switch to **Stacks Testnet**.
+- Get testnet STX from a [faucet](https://explorer.hiro.so/sandbox/faucet?chain=testnet) (needed for mint and high-score transaction fees).
+- Use **Connect wallet** in the app header to connect; then you can mint badges on `/claim` and sync high score after game over.
+- See **[docs/USER-GUIDE.md](docs/USER-GUIDE.md)** for step-by-step wallet setup, minting, and troubleshooting.
+
+### Testnet deployment (local only for now)
+
+- Run locally with `npm run dev` and the env vars above to use the testnet contract.
+- **Vercel deployment** is planned for mainnet; see **[docs/VERCEL-DEPLOY.md](docs/VERCEL-DEPLOY.md)** and **[docs/TESTNET-TO-MAINNET-MIGRATION-PLAN.md](docs/TESTNET-TO-MAINNET-MIGRATION-PLAN.md)** when deploying to production.
 
 ### npm audit (vulnerabilities)
 
@@ -226,8 +232,8 @@ After `npm install` you may see **low severity** vulnerabilities from transitive
 
 ## Roadmap
 
-- **Off-chain phase (current)** — Threes mechanics, local badges, off-chain leaderboard; no wallet required. See [docs/OFFCHAIN-PHASE.md](docs/OFFCHAIN-PHASE.md).
-- **Testnet / mainnet** — Re-enable on-chain features, deploy contract, wallet and minting.
+- **Testnet phase (current)** — On-chain minting and high-score sync enabled; contract `badgethrees` on Stacks testnet. See [docs/OFFCHAIN-PHASE.md](docs/OFFCHAIN-PHASE.md) and [docs/USER-GUIDE.md](docs/USER-GUIDE.md).
+- **Mainnet & Vercel** — After testnet validation: deploy contract to mainnet, then deploy app to Vercel with mainnet config.
 - **Leaderboard persistence** — Replace in-memory store with DB or KV (e.g. Vercel KV, Upstash).
 - **Game & UI** — Undo, hints, i18n, sound, theme toggles, a11y.
 - See [docs/FUTURE-SCOPE.md](docs/FUTURE-SCOPE.md) for more.

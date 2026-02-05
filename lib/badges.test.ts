@@ -30,14 +30,14 @@ const createStorage = (initial: Record<string, string> = {}) => {
 
 describe('unlockBadgesForScore', () => {
   it('returns unchanged for low score', () => {
-    const { badges, didChange, newlyUnlocked } = unlockBadgesForScore(512, DEFAULT_BADGES)
+    const { badges, didChange, newlyUnlocked } = unlockBadgesForScore(256, DEFAULT_BADGES)
     expect(badges).toEqual(DEFAULT_BADGES)
     expect(didChange).toBe(false)
     expect(newlyUnlocked).toEqual([])
   })
 
   it('unlocks bronze at threshold', () => {
-    const { badges, didChange, newlyUnlocked } = unlockBadgesForScore(1024, DEFAULT_BADGES)
+    const { badges, didChange, newlyUnlocked } = unlockBadgesForScore(384, DEFAULT_BADGES)
     const bronze = badges.find((badge) => badge.tier === 'bronze')
 
     expect(bronze?.unlocked).toBe(true)
@@ -47,7 +47,7 @@ describe('unlockBadgesForScore', () => {
   })
 
   it('unlocks multiple tiers for high score', () => {
-    const { badges, newlyUnlocked } = unlockBadgesForScore(5000, DEFAULT_BADGES)
+    const { badges, newlyUnlocked } = unlockBadgesForScore(2000, DEFAULT_BADGES)
     const unlockedTiers = badges.filter((badge) => badge.unlocked).map((badge) => badge.tier)
 
     expect(unlockedTiers).toEqual(['bronze', 'silver', 'gold'])
@@ -58,7 +58,7 @@ describe('unlockBadgesForScore', () => {
     const preUnlocked = DEFAULT_BADGES.map((badge) =>
       badge.tier === 'bronze' ? { ...badge, unlocked: true } : badge
     )
-    const { badges, didChange, newlyUnlocked } = unlockBadgesForScore(1024, preUnlocked)
+    const { badges, didChange, newlyUnlocked } = unlockBadgesForScore(384, preUnlocked)
 
     expect(badges).toEqual(preUnlocked)
     expect(newlyUnlocked).toEqual([])
@@ -175,7 +175,7 @@ describe('loadBadgesFromStorage', () => {
 
 describe('claim flow', () => {
   it('unlocks, claims, and persists a badge', () => {
-    const { badges: unlocked } = unlockBadgesForScore(2048, DEFAULT_BADGES)
+    const { badges: unlocked } = unlockBadgesForScore(768, DEFAULT_BADGES)
     const claimedAt = '2026-01-24T10:15:30.000Z'
     const { badges: claimed, claimedBadge, didChange } = claimBadgeForTier(
       'bronze',

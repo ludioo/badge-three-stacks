@@ -2,7 +2,7 @@
 
 **Application Name:** Badge Threes
 
-**Off-chain phase:** Badges are unlocked and claimed locally; they are **display-only** from an on-chain perspective. NFT minting is disabled via feature flags. See [OFFCHAIN-PHASE.md](./OFFCHAIN-PHASE.md).
+**Testnet phase:** Badges are unlocked and claimed locally; when on-chain is enabled, claimed badges can be **minted as SIP-009 NFTs** on Stacks testnet (contract `badgethrees`). See [OFFCHAIN-PHASE.md](./OFFCHAIN-PHASE.md) and [USER-GUIDE.md](./USER-GUIDE.md).
 
 ## Purpose
 
@@ -12,12 +12,14 @@
 
 ## Badge Tiers (MVP)
 
+Badge Threes uses **lower score thresholds** than 2048 because Power-of-3 mechanics (1+2→3, 3+3→6) are harder; thresholds follow the Threes progression (384 → 768 → 1536 → 3072).
+
 | Tier   | Score Threshold | Description |
 | ------ | --------------- | ----------- |
-| Bronze | ≥1024          | First milestone achievement |
-| Silver | ≥2048          | Intermediate achievement |
-| Gold   | ≥4096          | Advanced achievement |
-| Elite  | ≥8192          | Expert level achievement |
+| Bronze | ≥ 384           | First milestone achievement |
+| Silver | ≥ 768           | Intermediate achievement |
+| Gold   | ≥ 1536          | Advanced achievement |
+| Elite  | ≥ 3072          | Expert level achievement |
 
 ## Badge Rules
 
@@ -64,4 +66,4 @@ See [DATA-MODELS.md](./DATA-MODELS.md) for detailed badge data structure.
 * Badges stored in browser local storage (MVP)
 * Key: `badges_v1` (legacy `badges` auto-migrated)
 * Persists across sessions
-* Will migrate to on-chain storage in future
+* **On-chain (testnet):** When feature flags allow, users can mint claimed badges as NFTs on Stacks via contract `badgethrees`; ownership and token IDs are stored on-chain and merged with local state on `/badges` and `/claim`.

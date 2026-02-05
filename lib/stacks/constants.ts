@@ -35,10 +35,10 @@ export type { BadgeTier as BadgeTierType };
 
 // Badge tier thresholds
 export const BADGE_THRESHOLDS = {
-  [BADGE_TIERS.BRONZE]: 1024,
-  [BADGE_TIERS.SILVER]: 2048,
-  [BADGE_TIERS.GOLD]: 4096,
-  [BADGE_TIERS.ELITE]: 8192,
+  [BADGE_TIERS.BRONZE]: 384,
+  [BADGE_TIERS.SILVER]: 768,
+  [BADGE_TIERS.GOLD]: 1536,
+  [BADGE_TIERS.ELITE]: 3072,
 } as const;
 
 // Error codes

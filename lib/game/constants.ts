@@ -1,11 +1,11 @@
 import type { Badge } from './types';
 
-// Default Badge Configuration
+// Default Badge Configuration (Threes is harder than 2048; thresholds aligned to Power-of-3 progression: 384→768→1536→3072)
 export const DEFAULT_BADGES: Badge[] = [
-  { tier: 'bronze', threshold: 1024, unlocked: false, claimed: false },
-  { tier: 'silver', threshold: 2048, unlocked: false, claimed: false },
-  { tier: 'gold', threshold: 4096, unlocked: false, claimed: false },
-  { tier: 'elite', threshold: 8192, unlocked: false, claimed: false },
+  { tier: 'bronze', threshold: 384, unlocked: false, claimed: false },
+  { tier: 'silver', threshold: 768, unlocked: false, claimed: false },
+  { tier: 'gold', threshold: 1536, unlocked: false, claimed: false },
+  { tier: 'elite', threshold: 3072, unlocked: false, claimed: false },
 ];
 
 // Board size - FIXED, never changes

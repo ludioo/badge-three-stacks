@@ -9,7 +9,7 @@ describe("Badge Threes Contract Tests", () => {
       const result = simnet.callPublicFn(
         "badgethrees",
         "mint-badge",
-        [Cl.stringAscii("bronze"), Cl.uint(1024)],
+        [Cl.stringAscii("bronze"), Cl.uint(384)],
         wallet1
       );
 
@@ -29,7 +29,7 @@ describe("Badge Threes Contract Tests", () => {
         [Cl.principal(wallet1)],
         wallet1
       );
-      expect(highScore.result).toBeOk(Cl.uint(1024));
+      expect(highScore.result).toBeOk(Cl.uint(384));
     });
 
     it("should fail to mint badge with invalid score (too low)", () => {
@@ -38,7 +38,7 @@ describe("Badge Threes Contract Tests", () => {
       const result = simnet.callPublicFn(
         "badgethrees",
         "mint-badge",
-        [Cl.stringAscii("bronze"), Cl.uint(500)],
+        [Cl.stringAscii("bronze"), Cl.uint(200)],
         wallet1
       );
 
@@ -51,7 +51,7 @@ describe("Badge Threes Contract Tests", () => {
       const result1 = simnet.callPublicFn(
         "badgethrees",
         "mint-badge",
-        [Cl.stringAscii("bronze"), Cl.uint(1024)],
+        [Cl.stringAscii("bronze"), Cl.uint(384)],
         wallet1
       );
       expect(result1.result).toBeOk(Cl.uint(1));
@@ -59,7 +59,7 @@ describe("Badge Threes Contract Tests", () => {
       const result2 = simnet.callPublicFn(
         "badgethrees",
         "mint-badge",
-        [Cl.stringAscii("bronze"), Cl.uint(2048)],
+        [Cl.stringAscii("bronze"), Cl.uint(768)],
         wallet1
       );
 
@@ -73,7 +73,7 @@ describe("Badge Threes Contract Tests", () => {
         simnet.callPublicFn(
           "badgethrees",
           "mint-badge",
-          [Cl.stringAscii("bronze"), Cl.uint(1024)],
+          [Cl.stringAscii("bronze"), Cl.uint(384)],
           wallet1
         ).result
       ).toBeOk(Cl.uint(1));
@@ -81,7 +81,7 @@ describe("Badge Threes Contract Tests", () => {
         simnet.callPublicFn(
           "badgethrees",
           "mint-badge",
-          [Cl.stringAscii("silver"), Cl.uint(2048)],
+          [Cl.stringAscii("silver"), Cl.uint(768)],
           wallet1
         ).result
       ).toBeOk(Cl.uint(2));
@@ -89,7 +89,7 @@ describe("Badge Threes Contract Tests", () => {
         simnet.callPublicFn(
           "badgethrees",
           "mint-badge",
-          [Cl.stringAscii("gold"), Cl.uint(4096)],
+          [Cl.stringAscii("gold"), Cl.uint(1536)],
           wallet1
         ).result
       ).toBeOk(Cl.uint(3));
@@ -97,7 +97,7 @@ describe("Badge Threes Contract Tests", () => {
         simnet.callPublicFn(
           "badgethrees",
           "mint-badge",
-          [Cl.stringAscii("elite"), Cl.uint(8192)],
+          [Cl.stringAscii("elite"), Cl.uint(3072)],
           wallet1
         ).result
       ).toBeOk(Cl.uint(4));
@@ -181,7 +181,7 @@ describe("Badge Threes Contract Tests", () => {
       simnet.callPublicFn(
         "badgethrees",
         "mint-badge",
-        [Cl.stringAscii("bronze"), Cl.uint(1024)],
+        [Cl.stringAscii("bronze"), Cl.uint(384)],
         wallet1
       );
 
@@ -191,7 +191,7 @@ describe("Badge Threes Contract Tests", () => {
         [Cl.principal(wallet1)],
         wallet1
       );
-      expect(highScore.result).toBeOk(Cl.uint(1024));
+      expect(highScore.result).toBeOk(Cl.uint(384));
     });
   });
 
@@ -203,7 +203,7 @@ describe("Badge Threes Contract Tests", () => {
       simnet.callPublicFn(
         "badgethrees",
         "mint-badge",
-        [Cl.stringAscii("silver"), Cl.uint(2048)],
+        [Cl.stringAscii("silver"), Cl.uint(768)],
         wallet1
       );
 
@@ -231,7 +231,7 @@ describe("Badge Threes Contract Tests", () => {
       const { result, events } = simnet.callPublicFn(
         "badgethrees",
         "mint-badge",
-        [Cl.stringAscii("bronze"), Cl.uint(1024)],
+        [Cl.stringAscii("bronze"), Cl.uint(384)],
         wallet1
       );
       expect(result).toBeOk(Cl.uint(1));
@@ -279,7 +279,7 @@ describe("Badge Threes Contract Tests", () => {
       const mintResult = simnet.callPublicFn(
         "badgethrees",
         "mint-badge",
-        [Cl.stringAscii("bronze"), Cl.uint(1024)],
+        [Cl.stringAscii("bronze"), Cl.uint(384)],
         wallet1
       );
       expect(mintResult.result).toBeOk(Cl.uint(1));

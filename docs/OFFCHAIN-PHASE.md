@@ -1,31 +1,36 @@
-# Off-Chain Phase
+# Off-Chain Phase & Testnet Transition
 
-This document describes the current **off-chain phase** of Badge Threes: what is enabled, what is disabled, and how we move to testnet/mainnet.
+This document describes the **off-chain baseline** of Badge Threes and the **transition to testnet**: what can run without a wallet, what is controlled by feature flags, and how testnet/mainnet are configured.
 
 ## Purpose
 
 * Validate Threes game mechanics and UX without blockchain dependency
 * Allow play, local badges, and off-chain leaderboard without a wallet
-* Keep code paths for on-chain features behind feature flags for a clear path to testnet/mainnet
+* **Testnet phase**: On-chain minting and high-score sync are enabled when feature flags are on and contract is configured.
 
-## What Is Enabled
+## What Is Enabled (Always)
 
 * **Full Threes gameplay** — Power-of-3 merge (1+2→3, 3+3→6, …), spawn 1/2/3, game over when no moves
 * **Local badges** — Unlock at score thresholds (Bronze, Silver, Gold, Elite); claim locally; persistence in `localStorage`
-* **Off-chain leaderboard** — Submit best score (no wallet required in current implementation); view top scores and “Your rank”
+* **Off-chain leaderboard** — Submit best score view top scores and “Your rank”
 * **All pages** — Home, Play, Badges, Claim, Leaderboard
-* **Tests** — Unit tests (Vitest) and E2E tests (Playwright) for Threes rules and off-chain flows
+* **Tests** — Unit tests (Vitest) and E2E tests (Playwright) for Threes rules and flows
 
-## What Is Disabled (Feature Flags)
+## What Is Enabled on Testnet (When Feature Flags On)
 
-Controlled by `lib/featureFlags.ts`:
+* **On-chain badge minting** — Claim page mints badges as SIP-009 NFTs on Stacks testnet (contract `badgethrees`)
+* **On-chain high score** — After game over, sync highest score to contract when wallet is connected
+* **Wallet connection** — Leather or Hiro; connect to view on-chain badges and perform mint/score transactions
+* **Badge display** — `/badges` merges off-chain and on-chain badge state
 
-| Flag | Value (off-chain) | Effect |
-|------|-------------------|--------|
-| `ONCHAIN_ENABLED` | `false` | Master switch; all on-chain features off |
-| `BADGE_MINTING` | `false` | Claim page does not mint NFTs; “Claim” is local-only or shows “Coming soon” / off-chain message |
-| `ONCHAIN_SCORE_SUBMISSION` | `false` | Score is not submitted on-chain; only off-chain leaderboard is used |
-| `WALLET_REQUIRED` | `false` | Wallet connect can be hidden or optional; game and leaderboard work without wallet |
+## Feature Flags (`lib/featureFlags.ts`)
+
+| Flag | Off-chain (default) | Testnet (when enabled) |
+|------|---------------------|-------------------------|
+| `ONCHAIN_ENABLED` | `false` | `true` — enables on-chain reads and contract config |
+| `BADGE_MINTING` | `false` | `true` — claim page can mint NFTs |
+| `ONCHAIN_SCORE_SUBMISSION` | `false` | `true` — game over can sync high score on-chain |
+| `WALLET_REQUIRED` | `false` | Typically `false` — game/leaderboard work without wallet; mint/score need wallet |
 
 ## API Behavior
 
@@ -44,18 +49,17 @@ Controlled by `lib/featureFlags.ts`:
 
 ## Roadmap: Off-Chain → Testnet → Mainnet
 
-1. **Off-chain (current)**  
-   Feature flags keep on-chain off. Validate game, badges, and leaderboard behavior.
+1. **Off-chain (baseline)**  
+   With feature flags off, the app runs without any Stacks dependency. Game, local badges, and leaderboard work.
 
-2. **Testnet**  
-   * Set `ONCHAIN_ENABLED`, `BADGE_MINTING`, `ONCHAIN_SCORE_SUBMISSION`, and optionally `WALLET_REQUIRED` as needed.
-   * Deploy or use existing Clarity contract on Stacks testnet.
-   * Configure `NEXT_PUBLIC_STACKS_NETWORK=testnet` and contract/deployer env vars.
-   * Run manual and E2E tests for claim and leaderboard with wallet.
+2. **Testnet (current)**  
+   * Feature flags enabled for on-chain minting and high-score sync.
+   * Contract `badgethrees` deployed on Stacks testnet: `ST22ZCY5GAH27T4CK3ATG4QTZJQV6FXPRBAQ0BRW5.badgethrees`.
+   * Configure `NEXT_PUBLIC_STACKS_NETWORK=testnet` and contract/deployer env vars (see README and [USER-GUIDE.md](./USER-GUIDE.md)).
+   * Manual and E2E tests cover claim flow and leaderboard; run locally (Vercel deploy planned for mainnet).
 
 3. **Mainnet**  
-   * After testnet validation, switch to mainnet (e.g. `NEXT_PUBLIC_STACKS_NETWORK=mainnet`).
-   * Use mainnet contract address and deployer.
+   * After testnet validation, deploy contract to mainnet and set `NEXT_PUBLIC_STACKS_NETWORK=mainnet` and mainnet contract address.
    * See [TESTNET-TO-MAINNET-MIGRATION-PLAN.md](./TESTNET-TO-MAINNET-MIGRATION-PLAN.md) for deployment and checklist.
 
 ## Configuration

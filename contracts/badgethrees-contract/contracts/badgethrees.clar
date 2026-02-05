@@ -12,11 +12,11 @@
 ;; Constants
 ;; ============================================================================
 
-;; Badge tier score thresholds (Badge Threes gameplay)
-(define-constant TIER-BRONZE-THRESHOLD u1024)
-(define-constant TIER-SILVER-THRESHOLD u2048)
-(define-constant TIER-GOLD-THRESHOLD u4096)
-(define-constant TIER-ELITE-THRESHOLD u8192)
+;; Badge tier score thresholds (Badge Threes gameplay; Threes is harder than 2048 — aligned to Power-of-3 progression)
+(define-constant TIER-BRONZE-THRESHOLD u384)
+(define-constant TIER-SILVER-THRESHOLD u768)
+(define-constant TIER-GOLD-THRESHOLD u1536)
+(define-constant TIER-ELITE-THRESHOLD u3072)
 
 ;; Error codes
 (define-constant ERR-INVALID-TIER u1001)

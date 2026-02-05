@@ -24,11 +24,11 @@ todos:
     content: "Phase 7: Testing & Validation - Update unit tests, update E2E tests, manual testing on devices, create testing documentation"
     status: completed
   - id: phase8-deployment
-    content: "Phase 8: Deployment & Monitoring - Deploy to Vercel testnet, verify deployment, setup monitoring"
-    status: pending
+    content: "Phase 8: Deployment & Monitoring - Deploy to Vercel testnet (SKIPPED: deploy to Vercel when mainnet only)"
+    status: cancelled
   - id: phase9-documentation
     content: "Phase 9: Documentation Updates - Update README, technical docs, create user guide"
-    status: pending
+    status: completed
 isProject: false
 ---
 
@@ -1004,9 +1004,10 @@ export const isRetryableError = (errorCode: number): boolean => {
 
 ---
 
-## Phase 8: Deployment & Monitoring
+## Phase 8: Deployment & Monitoring (SKIPPED)
 
-**Goal**: Deploy to testnet environment and monitor
+**Goal**: Deploy to testnet environment and monitor  
+**Decision**: Skip Phase 8; deploy to Vercel only when moving to mainnet. Testnet validation is done locally.
 
 ### 8.1 Pre-Deployment Checklist
 
@@ -1074,11 +1075,12 @@ export const isRetryableError = (errorCode: number): boolean => {
 
 ---
 
-## Phase 9: Documentation Updates
+## Phase 9: Documentation Updates ✅ COMPLETE
 
-**Goal**: Update all documentation for testnet phase
+**Goal**: Update all documentation for testnet phase  
+**Status**: Completed.
 
-### 9.1 Update README
+### 9.1 Update README ✅
 
 **File**: `[README.md](README.md)`
 
@@ -1089,9 +1091,9 @@ export const isRetryableError = (errorCode: number): boolean => {
 - Add testnet deployment info
 - Update environment setup guide
 
-### 9.2 Update Technical Docs
+### 9.2 Update Technical Docs ✅
 
-**Files to update:**
+**Files updated:**
 
 - `[docs/OFFCHAIN-PHASE.md](docs/OFFCHAIN-PHASE.md)` - Note transition to testnet
 - `[docs/BADGE-SYSTEM.md](docs/BADGE-SYSTEM.md)` - Add on-chain minting info
@@ -1106,9 +1108,9 @@ All documentation that references `badge2048` contract should be updated to refe
 - Contract address: `ST22ZCY5GAH27T4CK3ATG4QTZJQV6FXPRBAQ0BRW5.badge2048` → `ST22ZCY5GAH27T4CK3ATG4QTZJQV6FXPRBAQ0BRW5.badgethrees`
 - Game context: Badge2048 → Badge Threes (Power-of-3 mechanics)
 
-### 9.3 Create User Guide
+### 9.3 Create User Guide ✅
 
-**New file**: `docs/USER-GUIDE.md`
+**Created**: `docs/USER-GUIDE.md`
 
 **Content:**
 
@@ -1119,6 +1121,17 @@ All documentation that references `badge2048` contract should be updated to refe
 - How to update high score
 - FAQ section
 - Troubleshooting common issues
+
+### 9.4 Phase 9 Completion Checklist ✅
+
+- [x] README: status → Testnet phase; wallet connection; testnet deployment (local); env guide
+- [x] OFFCHAIN-PHASE.md: title and transition to testnet; Feature Flags table; Roadmap (Testnet current)
+- [x] BADGE-SYSTEM.md: testnet phase intro; Persistence section with on-chain minting
+- [x] CLAIM-FLOW.md: testnet mode intro; Implementation Notes (Current Testnet / Off-Chain Only)
+- [x] ONCHAIN_STACKS_BADGE2048.md: title and Quick Reference updated for Badge Threes / badgethrees
+- [x] USER-GUIDE.md: created (wallet connect, testnet STX, mint, view badges, high score, FAQ, troubleshooting)
+
+**Phase 9 status: ✅ Complete** — Documentation aligned with testnet phase; Phase 8 skipped (Vercel deploy at mainnet).
 
 ---
 
@@ -1145,8 +1158,8 @@ All documentation that references `badge2048` contract should be updated to refe
 - ✅ All unit tests passing
 - ✅ All E2E tests passing
 - ✅ Manual testing complete on all devices
-- ✅ Deployed to testnet environment
-- ✅ Documentation updated (contract references updated to badgethrees)
+- ⏭️ Deploy to Vercel: skipped (planned for mainnet only)
+- ✅ Documentation updated (contract references updated to badgethrees; README, OFFCHAIN-PHASE, BADGE-SYSTEM, CLAIM-FLOW, ONCHAIN_STACKS_BADGE2048, USER-GUIDE)
 - ✅ No critical bugs or issues
 
 ---

@@ -1,11 +1,15 @@
-# Badge2048 — Onchain Implementation (Stacks)
+# Badge Threes — Onchain Implementation (Stacks)
+
+**Current contract:** Badge Threes uses the **`badgethrees`** contract (not `badge2048`). Contract address: `ST22ZCY5GAH27T4CK3ATG4QTZJQV6FXPRBAQ0BRW5.badgethrees` on testnet. This document retains the original Badge2048 structure for reference; replace `badge2048` with `badgethrees` and Badge2048 with Badge Threes where applicable.
 
 ## 0. Quick Reference - Your Testnet Wallet
 
 **Your Testnet Wallet Address**: `ST22ZCY5GAH27T4CK3ATG4QTZJQV6FXPRBAQ0BRW5`
 
+**Badge Threes testnet contract**: `ST22ZCY5GAH27T4CK3ATG4QTZJQV6FXPRBAQ0BRW5.badgethrees`
+
 Wallet ini dikonfigurasi untuk:
-- ✅ Contract deployment ke testnet
+- ✅ Contract deployment ke testnet (badgethrees)
 - ✅ Testing contract functions
 - ✅ Minting badges
 - ✅ Verifying NFT ownership

@@ -6,7 +6,7 @@ SIP-009 NFT contract for **Badge Threes** game achievements. Badge Threes uses P
 
 - **Contract name**: `badgethrees`
 - **Purpose**: NFT badges for Badge Threes score milestones
-- **Game**: Power-of-3 (Threes-style) mechanics; thresholds align with achievable scores
+- **Game**: Power-of-3 (Threes-style) mechanics; thresholds (384/768/1536/3072) are lower than 2048-style values because Threes is harder
 
 ## Contract Details
 
@@ -17,12 +17,14 @@ SIP-009 NFT contract for **Badge Threes** game achievements. Badge Threes uses P
 
 ## Badge Tiers & Thresholds
 
+(Threes is harder than 2048; thresholds aligned to Power-of-3 progression.)
+
 | Tier   | Min score |
 |--------|-----------|
-| Bronze | ≥ 1024    |
-| Silver | ≥ 2048    |
-| Gold   | ≥ 4096    |
-| Elite  | ≥ 8192    |
+| Bronze | ≥ 384     |
+| Silver | ≥ 768     |
+| Gold   | ≥ 1536    |
+| Elite  | ≥ 3072    |
 
 ## Public Functions
 
@@ -74,6 +76,8 @@ clarinet test
 ```
 
 ## Deployment
+
+**Thresholds (384/768/1536/3072)** are fixed in the contract. If you change them in `badgethrees.clar`, you must **redeploy** the contract for the new values to apply on testnet/mainnet.
 
 ### Testnet
 

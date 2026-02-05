@@ -1,10 +1,10 @@
 import { test, expect } from '@playwright/test'
 
 const badgesFixture = [
-  { tier: 'bronze', threshold: 1024, unlocked: true, claimed: false },
-  { tier: 'silver', threshold: 2048, unlocked: false, claimed: false },
-  { tier: 'gold', threshold: 4096, unlocked: false, claimed: false },
-  { tier: 'elite', threshold: 8192, unlocked: false, claimed: false },
+  { tier: 'bronze', threshold: 384, unlocked: true, claimed: false },
+  { tier: 'silver', threshold: 768, unlocked: false, claimed: false },
+  { tier: 'gold', threshold: 1536, unlocked: false, claimed: false },
+  { tier: 'elite', threshold: 3072, unlocked: false, claimed: false },
 ]
 
 test.describe('badge claim flow', () => {

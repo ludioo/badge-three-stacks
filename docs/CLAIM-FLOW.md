@@ -2,7 +2,7 @@
 
 **Application Name:** Badge Threes
 
-**Off-chain mode:** In the current off-chain phase, claim is local-only (state saved to `localStorage`). Minting as NFT on Stacks is disabled via feature flags. Claim page may show "Coming soon" or similar for minting. See [OFFCHAIN-PHASE.md](./OFFCHAIN-PHASE.md).
+**Testnet mode:** When on-chain is enabled, claim can **mint badges as NFTs** on Stacks testnet (contract `badgethrees`). Wallet must be connected; transaction is signed in Leather or Hiro. Local state is still saved; on-chain mint status is merged on `/badges`. See [OFFCHAIN-PHASE.md](./OFFCHAIN-PHASE.md) and [USER-GUIDE.md](./USER-GUIDE.md).
 
 ## Flow Overview
 
@@ -58,19 +58,18 @@ After claim:
 
 ## Implementation Notes
 
-### Current (Off-Chain Phase)
+### Current (Testnet / On-Chain Enabled)
 
-* All state management is frontend-only for claim state
-* No wallet required; no blockchain transaction for minting (minting disabled)
-* Local storage persistence for claimed state
-* Leaderboard can work without wallet (off-chain)
+* Claim state is saved locally; when minting is enabled, user can mint as NFT on Stacks testnet
+* Wallet (Leather or Hiro) required for minting; connect via header before claiming
+* Transaction is signed in wallet; app shows pending/success/error and link to Stacks Explorer
+* After mint, badge shows on-chain status on `/badges`; high score can be synced on game over
 
-### Future (On-Chain)
+### Off-Chain Only (Feature Flags Off)
 
-* Will require wallet connection
-* Will mint badge as NFT on-chain
-* Will require transaction confirmation
-* Will sync with on-chain state
+* With `BADGE_MINTING` false, claim is local-only (state saved to `localStorage`)
+* No wallet required; no blockchain transaction
+* Leaderboard works without wallet (off-chain)
 
 ## User Experience
 
