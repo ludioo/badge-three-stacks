@@ -10,7 +10,7 @@ todos:
     status: completed
   - id: phase3-claim-flow
     content: "Phase 3: Complete Claim Flow - Implement badge minting in ClaimGrid, add transaction status UI, create TransactionStatus component"
-    status: pending
+    status: completed
   - id: phase4-high-score
     content: "Phase 4: High Score Sync - Update Game.tsx with sync prompt, update ScoreDisplay with on-chain score display"
     status: pending
@@ -552,6 +552,17 @@ const handleConfirmMint = async () => {
 - `mergeOffchainAndOnchainBadges(offchain, onchainByTier)` - merges off-chain and on-chain state
 
 **Action**: Use these helpers in ClaimGrid implementation.
+
+### 3.5 Phase 3 Completion Checklist
+
+- [x] ClaimGrid: minting logic with `mintBadge`, onFinish/onCancel, polling for confirmation
+- [x] ClaimGrid: transaction status UI (pending, polling, success, error) via reusable component
+- [x] Transaction preview dialog: badge tier, network (testnet/mainnet), “Small network fee may apply”
+- [x] `components/ui/transaction-status.tsx` created: pending (spinner), success (checkmark + tx link), error (message + retry), polling (spinner + link + “Check status now”)
+- [x] Claim page: wallet check and status verified (no additional changes)
+- [x] Badge helpers from `lib/badges.ts` used in ClaimGrid (`updateBadgeWithOnchainData`, etc.)
+
+**Phase 3 status: ✅ Complete** — Claim flow with on-chain minting, transaction status UI, and preview. Ready for Phase 4 (High Score Sync).
 
 ---
 

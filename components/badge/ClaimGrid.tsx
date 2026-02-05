@@ -23,10 +23,14 @@ import { updateBadgeWithOnchainData } from '@/lib/badges'
 import { invalidateBadgeOwnershipCache } from '@/lib/badgeOwnershipCache'
 import { loadHighScore } from '@/lib/highScore'
 import { fetchBadgeOwnership, getOwnershipForTier } from '@/lib/stacks/badgeOwnershipClient'
-import { getExplorerUrl, apiUrl } from '@/lib/stacks/config'
+import { apiUrl, isTestnet } from '@/lib/stacks/config'
 import { ERROR_MESSAGES } from '@/lib/stacks/constants'
+import {
+  TransactionStatus as TransactionStatusUI,
+  type TransactionStatusType,
+} from '@/components/ui/transaction-status'
 
-type TransactionStatus = 'idle' | 'pending' | 'polling' | 'success' | 'error'
+type TransactionStatus = TransactionStatusType
 
 const mintingEnabled = FEATURES.BADGE_MINTING
 
@@ -1310,157 +1314,40 @@ export function ClaimGrid() {
                 </span>
               </div>
             </div>
+            {/* Transaction preview: network and fee note when idle */}
             {isAuthenticated && transactionStatus === 'idle' && (
               <div className="rounded-lg border border-[#FB6331] bg-[#FD9E7F]/20 p-3">
                 <p className="text-xs sm:text-sm text-[#F4622F]">
                   <span className="font-semibold">Wallet connected:</span> This badge will be minted as an NFT on the Stacks blockchain.
                 </p>
-              </div>
-            )}
-
-            {/* Transaction Status: Pending */}
-            {transactionStatus === 'pending' && (
-              <div className="rounded-lg border border-[#FB6331] bg-[#FD9E7F]/20 p-3 sm:p-4">
-                <div className="flex items-start gap-3">
-                  <div className="flex-shrink-0">
-                    <div className="h-5 w-5 animate-spin rounded-full border-2 border-[#F4622F] border-t-transparent" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs sm:text-sm font-medium text-[#F4622F]">
-                      Waiting for wallet approval...
-                    </p>
-                    <p className="text-xs text-[#E8552A] mt-1">
-                      Please approve the transaction in your wallet extension.
-                    </p>
-                  </div>
+                <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-[#E8552A]">
+                  <span>Network: {isTestnet ? 'Testnet' : 'Mainnet'}</span>
+                  <span aria-hidden>·</span>
+                  <span>Small network fee may apply.</span>
                 </div>
               </div>
             )}
 
-            {/* Transaction Status: Polling */}
-            {transactionStatus === 'polling' && transactionTxId && (
-              <div className="rounded-lg border border-[#FB6331] bg-[#FD9E7F]/20 p-3 sm:p-4">
-                <div className="flex items-start gap-3">
-                  <div className="flex-shrink-0">
-                    <div className="h-5 w-5 animate-spin rounded-full border-2 border-[#F4622F] border-t-transparent" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs sm:text-sm font-medium text-[#F4622F]">
-                      Minting badge onchain...
-                    </p>
-                    <p className="text-xs text-[#E8552A] mt-1">
-                      Transaction submitted. Waiting for confirmation... (Attempt {pollCount}/60)
-                    </p>
-                    <div className="mt-2 flex flex-col sm:flex-row gap-2">
-                      <a
-                        href={getTransactionUrl(transactionTxId) || '#'}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-xs text-[#F4622F] hover:text-[#E8552A] underline break-all"
-                      >
-                        View on Stacks Explorer
-                      </a>
-                      <button
-                        onClick={() => {
-                          // Manual check - trigger polling immediately
-                          if (transactionTxId) {
-                            console.log('[ClaimGrid] Manual check triggered for txId:', transactionTxId)
-                            // Clear current interval and restart with immediate check
-                            if (pollingIntervalRef.current) {
-                              clearInterval(pollingIntervalRef.current)
-                            }
-                            startPolling(transactionTxId)
-                          }
-                        }}
-                        className="text-xs text-[#F4622F] hover:text-[#E8552A] underline text-left sm:text-left"
-                      >
-                        Check status now
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Transaction Status: Success */}
-            {transactionStatus === 'success' && transactionTxId && (
-              <div className="rounded-lg border border-[#FB6331] bg-[#FD9E7F]/20 p-3 sm:p-4">
-                <div className="flex items-start gap-3">
-                  <div className="flex-shrink-0">
-                    <svg
-                      className="h-5 w-5 text-[#F4622F]"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M5 13l4 4L19 7"
-                      />
-                    </svg>
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs sm:text-sm font-medium text-[#F4622F]">
-                      Badge minted successfully!
-                    </p>
-                    <p className="text-xs text-[#E8552A] mt-1">
-                      Your badge has been minted as an NFT on the Stacks blockchain.
-                    </p>
-                    <a
-                      href={getTransactionUrl(transactionTxId) || '#'}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-xs text-[#F4622F] hover:text-[#E8552A] underline mt-2 inline-block break-all"
-                    >
-                      View transaction on Stacks Explorer
-                    </a>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Transaction Status: Error */}
-            {transactionStatus === 'error' && transactionError && (
-              <div className="rounded-lg border border-red-200 bg-red-50 p-3 sm:p-4">
-                <div className="flex items-start gap-3">
-                  <div className="flex-shrink-0">
-                    <svg
-                      className="h-5 w-5 text-red-600"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M6 18L18 6M6 6l12 12"
-                      />
-                    </svg>
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs sm:text-sm font-medium text-red-900">
-                      Transaction failed
-                    </p>
-                    <p className="text-xs text-red-700 mt-1 break-words">
-                      {transactionError}
-                    </p>
-                    {transactionTxId && (
-                      <a
-                        href={getTransactionUrl(transactionTxId) || '#'}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-xs text-red-600 hover:text-red-800 underline mt-2 inline-block break-all"
-                      >
-                        View transaction on Stacks Explorer
-                      </a>
-                    )}
-                  </div>
-                </div>
-              </div>
-            )}
+            <TransactionStatusUI
+              status={transactionStatus}
+              txId={transactionTxId}
+              txUrl={transactionTxId ? getTransactionUrl(transactionTxId) ?? undefined : undefined}
+              error={transactionError}
+              onRetry={handleConfirmClaim}
+              pollCount={pollCount}
+              maxPolls={60}
+              onCheckStatus={
+                transactionTxId
+                  ? () => {
+                      if (pollingIntervalRef.current) clearInterval(pollingIntervalRef.current)
+                      startPolling(transactionTxId)
+                    }
+                  : undefined
+              }
+              pendingMessage="Waiting for wallet approval..."
+              successMessage="Badge minted successfully!"
+              pollingMessage="Minting badge onchain..."
+            />
 
             <DialogFooter className="flex-col sm:flex-row gap-2">
               <Button
