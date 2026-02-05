@@ -29,6 +29,8 @@ export interface TransactionStatusProps {
   successMessage?: string
   /** Optional: override polling message. */
   pollingMessage?: string
+  /** Optional: override success description (default: badge minted message). */
+  successDescription?: string
 }
 
 /**
@@ -48,6 +50,7 @@ export function TransactionStatus({
   pendingMessage = 'Waiting for wallet approval...',
   successMessage = 'Transaction confirmed!',
   pollingMessage = 'Minting badge onchain...',
+  successDescription = 'Your badge has been minted as an NFT on the Stacks blockchain.',
 }: TransactionStatusProps) {
   if (status === 'idle') return null
 
@@ -161,7 +164,7 @@ export function TransactionStatus({
           <div className="min-w-0 flex-1">
             <p className="text-xs font-medium text-[#F4622F] sm:text-sm">{successMessage}</p>
             <p className="mt-1 text-xs text-[#E8552A]">
-              Your badge has been minted as an NFT on the Stacks blockchain.
+              {successDescription}
             </p>
             {linkUrl && (
               <a

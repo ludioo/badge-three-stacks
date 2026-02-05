@@ -7,11 +7,15 @@ import Link from 'next/link'
 import { useGame } from '@/hooks/useGame'
 import { useBadges } from '@/hooks/useBadges'
 import { useStacksWallet } from '@/hooks/useStacksWallet'
+import { useBadgeContract } from '@/hooks/useBadgeContract'
+import { useBadgeOnchain } from '@/hooks/useBadgeOnchain'
 import { useSubmitScore } from '@/hooks/useSubmitScore'
 import { useLeaderboardRank } from '@/hooks/useLeaderboardRank'
+import { FEATURES } from '@/lib/featureFlags'
 import type { BadgeState, BadgeTier } from '@/lib/game/types'
 import { updateHighScore } from '@/lib/highScore'
 import { BOARD_SIZE } from '@/lib/game/constants'
+import { apiUrl } from '@/lib/stacks/config'
 import { GameBoard } from './GameBoard'
 import { ScoreDisplay } from './ScoreDisplay'
 import {
@@ -22,15 +26,22 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
+import {
+  TransactionStatus as TransactionStatusUI,
+  type TransactionStatusType,
+} from '@/components/ui/transaction-status'
 
 export function Game() {
   const { state, tiles, move, restart, lastMoveEffects, invalidMoveTick } = useGame()
   const { unlockBadges } = useBadges()
-  const { address } = useStacksWallet()
+  const { address, isAuthenticated } = useStacksWallet()
+  const { updateHighScore: updateHighScoreOnchain, getTransactionUrl } = useBadgeContract()
+  const { getHighScore: getOnchainHighScore } = useBadgeOnchain()
   const { submitScore, status: submitStatus, error: submitError } = useSubmitScore()
   const { data: rankData, refetch: refetchRank } = useLeaderboardRank(address)
   const prefersReducedMotion = useReducedMotion()
   const gameOverSubmitRef = useRef(false)
+  const syncPromptCheckedRef = useRef(false)
   const touchStartRef = useRef<{ x: number; y: number } | null>(null)
   const mouseStartRef = useRef<{ x: number; y: number } | null>(null)
   const gestureHandledRef = useRef(false)
@@ -48,6 +59,15 @@ export function Game() {
   const [mounted, setMounted] = useState(false)
   const audioRef = useRef<AudioContext | null>(null)
   const lastGameOverScoreRef = useRef<number | null>(null)
+
+  // High score sync on-chain (game over prompt)
+  const [showHighScoreSyncDialog, setShowHighScoreSyncDialog] = useState(false)
+  const [onchainScoreAtGameOver, setOnchainScoreAtGameOver] = useState<number>(0)
+  const [highScoreSyncStatus, setHighScoreSyncStatus] = useState<TransactionStatusType>('idle')
+  const [highScoreSyncError, setHighScoreSyncError] = useState<string | null>(null)
+  const [highScoreSyncTxId, setHighScoreSyncTxId] = useState<string | null>(null)
+  const [highScorePollCount, setHighScorePollCount] = useState(0)
+  const highScorePollingIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   const badgeTierLabels = useMemo(() => ({
     bronze: { label: 'Bronze', className: 'bg-[#FD9E7F] text-[#F4622F] border-[#FB6331]' },
@@ -83,9 +103,15 @@ export function Game() {
   useEffect(() => {
     if (state.status !== 'gameover') {
       lastGameOverScoreRef.current = null
+      syncPromptCheckedRef.current = false
+      setShowHighScoreSyncDialog(false)
       setGameOverUnlocks([])
       setGameOverBadges([])
       setGameOverBestTile(0)
+      if (highScorePollingIntervalRef.current) {
+        clearInterval(highScorePollingIntervalRef.current)
+        highScorePollingIntervalRef.current = null
+      }
       return
     }
 
@@ -106,6 +132,27 @@ export function Game() {
     }
     lastGameOverScoreRef.current = state.score
   }, [state.status, state.score, state.board, unlockBadges])
+
+  // When game over and wallet connected, check if we should prompt to sync high score on-chain
+  useEffect(() => {
+    if (
+      state.status !== 'gameover' ||
+      !FEATURES.ONCHAIN_SCORE_SUBMISSION ||
+      !isAuthenticated ||
+      !address ||
+      syncPromptCheckedRef.current
+    ) {
+      return
+    }
+    syncPromptCheckedRef.current = true
+    getOnchainHighScore(address).then((result) => {
+      const onchainScore = result.data?.score ?? 0
+      if (state.score > onchainScore) {
+        setOnchainScoreAtGameOver(onchainScore)
+        setShowHighScoreSyncDialog(true)
+      }
+    })
+  }, [state.status, state.score, isAuthenticated, address, getOnchainHighScore])
 
   useEffect(() => {
     if (!badgeToast) return
@@ -284,6 +331,105 @@ export function Game() {
     mouseStartRef.current = null
     gestureHandledRef.current = false
   }
+
+  const startPollingHighScoreTx = useCallback((txId: string) => {
+    const normalizedTxId = txId.trim().replace(/^0x/i, '')
+    const maxPolls = 60
+    let pollCount = 0
+
+    const poll = async () => {
+      pollCount++
+      setHighScorePollCount(pollCount)
+      try {
+        const controller = new AbortController()
+        const timeoutId = setTimeout(() => controller.abort(), 10000)
+        const res = await fetch(`${apiUrl}/extended/v1/tx/${normalizedTxId}`, {
+          method: 'GET',
+          headers: { Accept: 'application/json' },
+          signal: controller.signal,
+        })
+        clearTimeout(timeoutId)
+        if (res.status === 404) {
+          if (pollCount >= maxPolls && highScorePollingIntervalRef.current) {
+            clearInterval(highScorePollingIntervalRef.current)
+            highScorePollingIntervalRef.current = null
+            setHighScoreSyncStatus('error')
+            setHighScoreSyncError('Transaction not found after multiple attempts. Check Stacks Explorer.')
+          }
+          return
+        }
+        if (!res.ok) {
+          if (pollCount >= maxPolls && highScorePollingIntervalRef.current) {
+            clearInterval(highScorePollingIntervalRef.current)
+            highScorePollingIntervalRef.current = null
+            setHighScoreSyncStatus('error')
+            setHighScoreSyncError('Failed to confirm transaction. Check Stacks Explorer.')
+          }
+          return
+        }
+        const data = await res.json()
+        const txStatus = data?.tx_status || data?.status || data?.txStatus
+        if (txStatus === 'success') {
+          if (highScorePollingIntervalRef.current) {
+            clearInterval(highScorePollingIntervalRef.current)
+            highScorePollingIntervalRef.current = null
+          }
+          setHighScoreSyncStatus('success')
+        }
+      } catch {
+        if (pollCount >= maxPolls && highScorePollingIntervalRef.current) {
+          clearInterval(highScorePollingIntervalRef.current)
+          highScorePollingIntervalRef.current = null
+          setHighScoreSyncStatus('error')
+          setHighScoreSyncError('Failed to confirm transaction. Check Stacks Explorer.')
+        }
+      }
+    }
+
+    if (highScorePollingIntervalRef.current) {
+      clearInterval(highScorePollingIntervalRef.current)
+    }
+    highScorePollingIntervalRef.current = setInterval(poll, 5000)
+    poll()
+  }, [])
+
+  const handleSyncHighScore = useCallback(() => {
+    if (state.status !== 'gameover' || !address) return
+    setHighScoreSyncStatus('pending')
+    setHighScoreSyncError(null)
+    setHighScoreSyncTxId(null)
+
+    updateHighScoreOnchain({
+      score: state.score,
+      onFinish: (data) => {
+        const txId = data?.txId
+        if (txId && txId.trim()) {
+          setHighScoreSyncTxId(txId)
+          setHighScoreSyncStatus('polling')
+          startPollingHighScoreTx(txId)
+        } else {
+          setHighScoreSyncStatus('error')
+          setHighScoreSyncError('No transaction ID received')
+        }
+      },
+      onCancel: () => {
+        setHighScoreSyncStatus('idle')
+        setHighScoreSyncError(null)
+      },
+    })
+  }, [state.status, state.score, address, updateHighScoreOnchain, startPollingHighScoreTx])
+
+  const handleSkipHighScoreSync = useCallback(() => {
+    setShowHighScoreSyncDialog(false)
+    setHighScoreSyncStatus('idle')
+    setHighScoreSyncError(null)
+    setHighScoreSyncTxId(null)
+    setHighScorePollCount(0)
+    if (highScorePollingIntervalRef.current) {
+      clearInterval(highScorePollingIntervalRef.current)
+      highScorePollingIntervalRef.current = null
+    }
+  }, [])
 
   return (
     <div className="flex flex-col items-center gap-4 sm:gap-6 p-4 sm:p-6 md:p-8">
@@ -506,6 +652,49 @@ export function Game() {
                     )
                   })}
                 </div>
+              </div>
+            )}
+            {showHighScoreSyncDialog && FEATURES.ONCHAIN_SCORE_SUBMISSION && (
+              <div className="w-full rounded-xl border border-[#FB6331] bg-[#FD9E7F]/10 px-4 py-3">
+                <p className="text-sm font-medium text-[#F4622F]">Update high score on-chain?</p>
+                <p className="mt-1 text-xs text-[#4B5563]">
+                  On-chain: <span className="font-medium text-[#E8552A]">{onchainScoreAtGameOver.toLocaleString()}</span>
+                  {' → '}
+                  New: <span className="font-medium text-[#F4622F]">{state.score.toLocaleString()}</span>
+                </p>
+                <p className="mt-1 text-xs text-[#6B7280]">A small network fee may apply.</p>
+                <TransactionStatusUI
+                  status={highScoreSyncStatus}
+                  txId={highScoreSyncTxId}
+                  txUrl={highScoreSyncTxId ? getTransactionUrl(highScoreSyncTxId) : null}
+                  error={highScoreSyncError}
+                  onRetry={handleSyncHighScore}
+                  pollCount={highScorePollCount}
+                  maxPolls={60}
+                  pendingMessage="Waiting for wallet approval..."
+                  successMessage="High score updated!"
+                  successDescription="Your high score is now stored on the Stacks blockchain."
+                  pollingMessage="Updating high score on-chain..."
+                />
+                {(highScoreSyncStatus === 'idle' || highScoreSyncStatus === 'error') && (
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="rounded-full border-[#FD9E7F] text-[#4B5563] hover:bg-[#FD9E7F]/10"
+                      onClick={handleSkipHighScoreSync}
+                    >
+                      Skip
+                    </Button>
+                    <Button
+                      size="sm"
+                      className="rounded-full bg-[#F4622F] text-white hover:bg-[#FB6331]"
+                      onClick={handleSyncHighScore}
+                    >
+                      Sync to blockchain
+                    </Button>
+                  </div>
+                )}
               </div>
             )}
             <div className="w-full rounded-xl border border-[#FD9E7F] bg-white px-4 py-3 text-center">

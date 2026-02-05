@@ -13,7 +13,7 @@ todos:
     status: completed
   - id: phase4-high-score
     content: "Phase 4: High Score Sync - Update Game.tsx with sync prompt, update ScoreDisplay with on-chain score display"
-    status: pending
+    status: completed
   - id: phase5-badge-display
     content: "Phase 5: Badge Display Integration - Update Badges page to fetch on-chain badges, merge with off-chain state, update BadgeCard with on-chain status"
     status: pending
@@ -665,6 +665,14 @@ useEffect(() => {
 - Sync button
 - Transaction status
 - Success/error messages
+
+### 4.4 Phase 4 Completion Checklist
+
+- [x] Game.tsx: sync prompt on game over when `ONCHAIN_SCORE_SUBMISSION` and authenticated; dialog shows current on-chain vs new score, Skip/Sync, transaction status (pending/polling/success/error)
+- [x] ScoreDisplay: show local high score (Best), on-chain high score when wallet connected; "Sync to blockchain" button when local > on-chain; TransactionStatus for sync flow
+- [x] TransactionStatus: optional `successDescription` prop for high-score success message
+
+**Phase 4 status: ✅ Complete** — High score sync on game over and in ScoreDisplay; ready for Phase 5 (Badge Display).
 
 ---
 
