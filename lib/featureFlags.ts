@@ -6,13 +6,13 @@
 
 export const FEATURES = {
   /** Master switch: when false, all on-chain features are disabled. */
-  ONCHAIN_ENABLED: false,
+  ONCHAIN_ENABLED: true,
   /** Badge minting (claim as NFT on Stacks). */
-  BADGE_MINTING: false,
+  BADGE_MINTING: true,
   /** Submit high score on-chain via contract. When false, only off-chain leaderboard is used. */
-  ONCHAIN_SCORE_SUBMISSION: false,
+  ONCHAIN_SCORE_SUBMISSION: true,
   /** When false, wallet connect is hidden; game and leaderboard work without wallet. */
-  WALLET_REQUIRED: false,
+  WALLET_REQUIRED: true,
 } as const;
 
 export type FeatureFlags = typeof FEATURES;

@@ -1,10 +1,10 @@
 /**
  * Stacks Contract Constants
- * 
- * Constants for Badge2048 smart contract interaction
+ *
+ * Constants for Badge Threes (badgethrees) smart contract interaction.
  */
 
-export const CONTRACT_NAME = 'badge2048';
+export const CONTRACT_NAME = 'badgethrees';
 
 // Function names
 export const CONTRACT_FUNCTIONS = {

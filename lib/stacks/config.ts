@@ -51,6 +51,6 @@ export const apiUrl = isTestnet ? apiUrls.testnet : apiUrls.mainnet;
 
 // App details for wallet connection
 export const appDetails = {
-  name: 'badge2048-stacks',
+  name: 'badgethrees-stacks',
   icon: '/badge2048-stacks-icon.png',
 } as const;
