@@ -10,8 +10,8 @@ SIP-009 NFT contract for **Badge Threes** game achievements. Badge Threes uses P
 
 ## Contract Details
 
-- **Network**: Testnet (deploy first); Mainnet TBD
-- **Address (Testnet, after deploy)**: `ST22ZCY5GAH27T4CK3ATG4QTZJQV6FXPRBAQ0BRW5.badgethrees`
+- **Network**: Testnet (deployed); Mainnet TBD
+- **Address (Testnet)**: `ST22ZCY5GAH27T4CK3ATG4QTZJQV6FXPRBAQ0BRW5.badgethrees`
 - **Deployer**: `ST22ZCY5GAH27T4CK3ATG4QTZJQV6FXPRBAQ0BRW5`
 - **Standard**: SIP-009 NFT
 
@@ -127,7 +127,7 @@ clarinet deployments apply --mainnet
 
 ## Deployment History
 
-- **Testnet**: `ST22ZCY5GAH27T4CK3ATG4QTZJQV6FXPRBAQ0BRW5.badgethrees` — _fill date and tx ID after first deploy_
+- **Testnet**: `ST22ZCY5GAH27T4CK3ATG4QTZJQV6FXPRBAQ0BRW5.badgethrees` — deployed 2025-02-05; transactions successfully confirmed on Testnet (cost: 0.077610 STX)
 - **Mainnet**: TBD
 
 ## Verify on Stacks Explorer

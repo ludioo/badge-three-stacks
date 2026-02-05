@@ -296,7 +296,7 @@ contracts/
    - Test coverage: 11 test cases, all passing
 
 9. **Deployment History**
-   - Testnet: `ST22ZCY5GAH27T4CK3ATG4QTZJQV6FXPRBAQ0BRW5.badgethrees` (date, tx ID)
+   - Testnet: `ST22ZCY5GAH27T4CK3ATG4QTZJQV6FXPRBAQ0BRW5.badgethrees` — **deployed 2025-02-05**, transactions successfully confirmed on Testnet (cost: 0.077610 STX)
    - Mainnet: TBD
 
 ### 1.5 Phase 1 Completion Checklist
@@ -305,11 +305,13 @@ contracts/
 - [x] All comments and branding updated to Badge Threes
 - [x] Test file created and updated: `badgethrees_test.ts`
 - [ ] All 11 tests passing locally (run `npm test` or `clarinet test` when Clarinet/Vitest env is ready)
-- [ ] Contract deployed to testnet successfully (manual: configure `settings/Testnet.toml`, then `clarinet deployments apply --testnet`)
-- [ ] Contract verified on Stacks Explorer (after deploy)
+- [x] Contract deployed to testnet successfully (manual: configure `settings/Testnet.toml`, then `clarinet deployments apply --testnet`)
+- [x] Contract verified on Stacks Explorer (after deploy)
 - [x] Contract address documented (README + deployment plans)
 - [x] README.md created with full documentation
 - [x] Ready to integrate with frontend (Phase 2+)
+
+**Phase 1 status: ✅ Complete** — Contract deployed to testnet; ready for Phase 2.
 
 **Expected contract address**: `ST22ZCY5GAH27T4CK3ATG4QTZJQV6FXPRBAQ0BRW5.badgethrees`
 
@@ -319,7 +321,7 @@ contracts/
 - **Tests**: `contracts/badgethrees-contract/tests/badgethrees_test.ts` — 11 tests (mint valid/invalid/duplicate, all tiers, high score, ownership, events, SIP-009).
 - **Project**: Clarinet.toml, package.json, vitest.config.ts, tsconfig.json, vitest.d.ts, settings/Devnet.toml, deployments (simnet, testnet, mainnet), .gitignore, .gitattributes.
 - **Docs**: `contracts/badgethrees-contract/README.md` — overview, tiers, functions, events, error codes, testing, deployment.
-- **Remaining (manual)**: Run tests locally (`npm test` or `clarinet test`), configure `settings/Testnet.toml`, run `clarinet deployments apply --testnet`, verify on Stacks Explorer, then proceed to Phase 2.
+- **Deployment**: Testnet deploy completed 2025-02-05 (`clarinet deployments apply --testnet` — transactions successfully confirmed). Optionally run full 11 tests locally; then proceed to Phase 2.
 
 ---
 

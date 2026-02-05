@@ -1,6 +1,6 @@
 ;; Badge Threes Smart Contract
 ;; Implements SIP-009 NFT standard for achievement badges
-;; Each badge represents a score milestone in the Badge Threes game (Power-of-3: 1+2→3, 3+3→6, etc.)
+;; Each badge represents a score milestone in the Badge Threes game (Power-of-3: 1+2->3, 3+3->6, etc.)
 
 ;; ============================================================================
 ;; SIP-009 NFT Trait (must be implemented)
